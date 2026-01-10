@@ -35,7 +35,7 @@ application-dev.yml
 .gitattributes
 
 # Documentation
-README.md
+private_README.md
 CLAUDE.md
 docs
 

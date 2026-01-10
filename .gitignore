@@ -52,3 +52,5 @@ logs/
 ### Temporary Files ###
 *.tmp
 *.temp
+
+private_README.md
