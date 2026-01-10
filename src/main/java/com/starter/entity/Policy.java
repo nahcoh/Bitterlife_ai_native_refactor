@@ -15,36 +15,27 @@ import java.util.List;
 @Entity
 @Table(name = "policy")
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class Policy extends BaseTimeEntity{
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "policy_id")
-    private Long policyId;
+    private Long id;
     
-    @Column(name = "policy_name", nullable = false, length = 100)
-    private String policyName;
+    @Column(nullable = false, length = 100)
+    private String name;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
     
-    @Column(name = "policy_description", columnDefinition = "TEXT")
-    private String policyDescription;
+    @Column(columnDefinition = "TEXT")
+    private String prevDescription;
     
-    @Column(name = "policy_prev_description", columnDefinition = "TEXT")
-    private String policyPrevDescription;
-    
-    @Column(name = "policy_changed_content", columnDefinition = "TEXT")
-    private String policyChangedContent;
-    
-    @Column(name = "policy_updated_at")
-    private LocalDateTime policyUpdatedAt;
-    
-    @CreationTimestamp
-    @Column(name = "policy_created_at", nullable = false, updatable = false)
-    private LocalDateTime policyCreatedAt;
-    
+    @Column(columnDefinition = "TEXT")
+    private String changedContent;
+
     @OneToMany(mappedBy = "policy", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<UserPolicyAgreement> userAgreements = new ArrayList<>();
@@ -56,10 +47,9 @@ public class Policy extends BaseTimeEntity{
      * @param changedContent 변경된 내용
      */
     public void updatePolicy(String newDescription, String changedContent) {
-        this.policyPrevDescription = this.policyDescription;
-        this.policyDescription = newDescription;
-        this.policyChangedContent = changedContent;
-        this.policyUpdatedAt = LocalDateTime.now();
+        this.prevDescription = this.description;
+        this.description = newDescription;
+        this.changedContent = changedContent;
     }
     
     /**
@@ -67,7 +57,7 @@ public class Policy extends BaseTimeEntity{
      * @return 변경된 내용이 있으면 true, 없으면 false
      */
     public boolean hasChangedContent() {
-        return policyChangedContent != null && !policyChangedContent.trim().isEmpty();
+        return changedContent != null && !changedContent.trim().isEmpty();
     }
     
     /**

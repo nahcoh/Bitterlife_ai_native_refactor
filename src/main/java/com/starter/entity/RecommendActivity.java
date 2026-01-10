@@ -1,20 +1,25 @@
 package com.starter.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "recommend_activity")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class RecommendActivity extends BaseTimeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "activity_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -25,18 +30,20 @@ public class RecommendActivity extends BaseTimeEntity{
     @JoinColumn(name = "diary_id")
     private Diary diary;
 
-    @Column(name = "activity_title")
     private String title;
 
-    @Column(name = "activity_category")
     private String category;
 
-    @Column(name = "activity_detail")
     private String detail;
 
-    @Column(name = "activity_order")
-    private Long order;
+    private Integer order;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    // 일대다. 나중에 피드백 저장시
+    public void setFeedback(WeeklyFeedback feedback) {
+        this.feedback =feedback;
+        //피드백 객체 쪽 리스트에도 나를 추가해주는 센스
+        if (!feedback.getRecommendActivities().contains(this)) {
+            feedback.getRecommendActivities().add(this);
+        }
+    }
 }

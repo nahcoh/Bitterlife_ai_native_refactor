@@ -1,38 +1,46 @@
 package com.starter.entity;
 
+import com.starter.entity.Stamp.StampStatus;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "user_stamp")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
+@Getter
 public class UserStamp extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userStampId;
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "stamp_id", nullable = false)
+    private Stamp stamp;
 
     @Column(nullable = false)
-    private Long userId;
+    private StampStatus status = StampStatus.ACTIVE;
 
-    @Column(nullable = false)
-    private Long stampId;
+    public enum StampStatus {
+        ACTIVE, INACTIVE
+    }
 
-    @Column(length = 1)
-    private String isActive; // Y:적용중 / N:비적용중
+    public void activate() {
+        this.status = StampStatus.ACTIVE;
+    }
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    public void deactivate() {
+        this.status = UserStamp.StampStatus.INACTIVE;
+    }
 
-    // Getter/Setter
-    public Long getUserStampId() { return userStampId; }
-    public void setUserStampId(Long userStampId) { this.userStampId = userStampId; }
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
-    public Long getStampId() { return stampId; }
-    public void setStampId(Long stampId) { this.stampId = stampId; }
-    public String getIsActive() { return isActive; }
-    public void setIsActive(String isActive) { this.isActive = isActive; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 } 

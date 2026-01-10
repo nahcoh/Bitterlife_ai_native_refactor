@@ -37,20 +37,20 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false, length = 20)
     private String phone;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "current_stamp_id", nullable = false)
+    private Stamp currentStamp;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "integer default 0")
     @Builder.Default
     private Integer failedLogin = 0;
 
-    @Column(nullable = false)
-    @Builder.Default
-    private LocalDateTime lastLogin = LocalDateTime.now();
 
     @Column(nullable = false)
     @Builder.Default
     private Integer commentTime = 6;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "integer default 0")
     @Builder.Default
     private Integer tokenCount = 0;
 
@@ -149,6 +149,15 @@ public class User extends BaseTimeEntity {
     public boolean hasAgreedToPolicy(Long policyId) {
         return policyAgreements.stream()
                 .anyMatch(agreement -> agreement.getPolicyId().equals(policyId) && agreement.isAgreed());
+    }
+
+    /**
+     * 유저의 현재 도장을 교체하는 메서드
+     *
+     * @param newStamp 새로 장착할 도장
+     */
+    public void changeStamp(Stamp newStamp) {
+        this.currentStamp = newStamp;
     }
 }
 

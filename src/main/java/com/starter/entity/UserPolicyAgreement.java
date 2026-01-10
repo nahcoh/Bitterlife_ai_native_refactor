@@ -11,18 +11,16 @@ import java.time.LocalDateTime;
  * 사용자가 특정 정책에 동의했는지 여부를 관리
  */
 @Entity
-@Table(name = "user_policy_agreement")
+@Table(name = "user_policy_agreements")
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 public class UserPolicyAgreement extends BaseTimeEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "agreement_id")
-    private Long agreementId;
+    private Long id;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -31,21 +29,18 @@ public class UserPolicyAgreement extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "policy_id", nullable = false)
     private Policy policy;
-    
-    @CreationTimestamp
-    @Column(name = "agreement_agreed_at", nullable = false, updatable = false)
-    private LocalDateTime agreementAgreedAt;
-    
-    @Column(name = "agreement_is_agreed", nullable = false, length = 1)
+
+
+    @Column(nullable = false, length = 1)
     @Builder.Default
-    private String agreementIsAgreed = "N";
+    private String isAgreed = "N";
     
     /**
      * 사용자가 정책에 동의했는지 확인하는 메서드
      * @return 동의했으면 true, 아니면 false
      */
     public boolean isAgreed() {
-        return "Y".equals(agreementIsAgreed);
+        return "Y".equals(isAgreed);
     }
     
     /**
@@ -53,8 +48,7 @@ public class UserPolicyAgreement extends BaseTimeEntity {
      * 동의 상태를 'Y'로 변경하고 동의 시간을 현재 시간으로 설정
      */
     public void agree() {
-        this.agreementIsAgreed = "Y";
-        this.agreementAgreedAt = LocalDateTime.now();
+        this.isAgreed = "Y";
     }
     
     /**
@@ -62,7 +56,7 @@ public class UserPolicyAgreement extends BaseTimeEntity {
      * 동의 상태를 'N'으로 변경
      */
     public void disagree() {
-        this.agreementIsAgreed = "N";
+        this.isAgreed = "N";
     }
     
     /**
@@ -78,6 +72,14 @@ public class UserPolicyAgreement extends BaseTimeEntity {
      * @return 정책 ID, 연관된 정책이 없으면 null
      */
     public Long getPolicyId() {
-        return policy != null ? policy.getPolicyId() : null;
+        return policy != null ? policy.getId() : null;
+    }
+
+    public void setPolicy(Policy policy) {
+        this.policy = policy;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 } 

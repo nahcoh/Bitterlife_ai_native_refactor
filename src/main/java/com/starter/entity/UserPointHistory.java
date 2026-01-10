@@ -2,16 +2,24 @@ package com.starter.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "user_point_history")
+@Table(name = "user_point_histories")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class UserPointHistory extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userPointHistoryId;
+    private Long id;
 
-    @Column(nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "user_id", nullable = false)
+    private User user;
 
     @Column(nullable = false)
     private int beforePoint;
@@ -25,22 +33,18 @@ public class UserPointHistory extends BaseTimeEntity{
     @Column(nullable = false, columnDefinition = "TEXT")
     private String reason;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
 
-    // Getter/Setter
-    public Long getUserPointHistoryId() { return userPointHistoryId; }
-    public void setUserPointHistoryId(Long userPointHistoryId) { this.userPointHistoryId = userPointHistoryId; }
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
-    public int getBeforePoint() { return beforePoint; }
-    public void setBeforePoint(int beforePoint) { this.beforePoint = beforePoint; }
-    public int getAmount() { return amount; }
-    public void setAmount(int amount) { this.amount = amount; }
-    public int getAfterPoint() { return afterPoint; }
-    public void setAfterPoint(int afterPoint) { this.afterPoint = afterPoint; }
-    public String getReason() { return reason; }
-    public void setReason(String reason) { this.reason = reason; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    @Builder    //클래스 위가 아니라 생성자 위에 붙임
+    public UserPointHistory(User user, int beforePoint, int amount, int afterPoint, String reason) {
+        //정합성 체크: 계산이 맞는지 확인
+        if (beforePoint + amount != afterPoint) {
+            throw new IllegalArgumentException("포인트 계산 정합성이 맞지 않습니다.! (기존 + 변동 != 이후)");
+        }
+        this.user = user;
+        this.beforePoint = beforePoint;
+        this.amount = amount;
+        this.afterPoint = afterPoint;
+        this.reason = reason;
+    }
+
 } 

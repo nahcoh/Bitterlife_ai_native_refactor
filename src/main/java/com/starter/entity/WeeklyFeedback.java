@@ -1,7 +1,12 @@
 package com.starter.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -10,39 +15,45 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "weekly_feedback")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class WeeklyFeedback extends BaseTimeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "feedback_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "is_qualified")
-    private String isQualified;
+    @Column(nullable = false)
+    private Boolean isQualified;
 
-    @Column(name = "emotion_summary", columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String emotionSummary;
+
 
     private int weekOffset;
 
-    @Column(name = "feedback_start")
-    private String feedbackStart;
+    private LocalDate feedbackStart;
 
-    @Column(name = "feedback_end")
-    private String feedbackEnd;
+    private LocalDate feedbackEnd;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
 
+    @Builder.Default
     @OneToMany(mappedBy = "feedback", cascade = CascadeType.ALL)
     private List<FeedbackProof> feedbackProofs = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "feedback", cascade = CascadeType.ALL)
     private List<RecommendActivity> recommendActivities = new ArrayList<>();
+
+    //양방향 연관관계 편의 메서드
+    public void addProof(FeedbackProof proof) {
+        this.feedbackProofs.add(proof);
+        proof.setFeedback(this);
+    }
 }

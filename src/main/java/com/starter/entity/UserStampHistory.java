@@ -2,34 +2,36 @@ package com.starter.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "user_stamp_history")
-public class UserStampHistory extends BaseTimeEntity{
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
+@Getter
+public class UserStampHistory extends BaseTimeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userStampHistoryId;
+    private Long id;
 
-    @Column(nullable = false)
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(nullable = true)
-    private Long prevStampId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "prev_stamp_id", nullable = false)
+    private Stamp prevStamp;
 
-    @Column(nullable = false)
-    private Long newStampId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "new_stamp_id", nullable = false)
+    private Stamp newStamp;
 
-    private LocalDateTime createdAt;
 
-    // Getter/Setter
-    public Long getUserStampHistoryId() { return userStampHistoryId; }
-    public void setUserStampHistoryId(Long userStampHistoryId) { this.userStampHistoryId = userStampHistoryId; }
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
-    public Long getPrevStampId() { return prevStampId; }
-    public void setPrevStampId(Long prevStampId) { this.prevStampId = prevStampId; }
-    public Long getNewStampId() { return newStampId; }
-    public void setNewStampId(Long newStampId) { this.newStampId = newStampId; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
 } 

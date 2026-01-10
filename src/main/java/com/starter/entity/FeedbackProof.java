@@ -1,36 +1,43 @@
 package com.starter.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
-@Table(name = "feedback_proof")
+@Table(name = "feedback_proofs")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class FeedbackProof extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "proof_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "feedback_id")
+    @JoinColumn(name = "feedback_id", nullable = false)
     private WeeklyFeedback feedback;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "diary_id")
+    @JoinColumn(name = "diary_id", nullable = false)
     private Diary diary;
 
-    @Column(name = "proof_type")
+    @Column(nullable = false)
     private String type;
 
-    @Column(name = "proof_detail", columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String detail;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    public void setFeedback(WeeklyFeedback feedback) {
+        this.feedback = feedback;
+    }
+
 }

@@ -2,35 +2,35 @@ package com.starter.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "point")
+@Table(name = "points")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class Point extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pointId;
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;      //누구의 포인트인지 알아야함
 
     @Column(nullable = false, length = 100)
-    private String pointName;
+    private String name;
 
     @Column(nullable = false)
-    private int pointAmount;
+    private int amount;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String reason;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
 
-    // Getter/Setter
-    public Long getPointId() { return pointId; }
-    public void setPointId(Long pointId) { this.pointId = pointId; }
-    public String getPointName() { return pointName; }
-    public void setPointName(String pointName) { this.pointName = pointName; }
-    public int getPointAmount() { return pointAmount; }
-    public void setPointAmount(int pointAmount) { this.pointAmount = pointAmount; }
-    public String getReason() { return reason; }
-    public void setReason(String reason) { this.reason = reason; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
-} 
+}
