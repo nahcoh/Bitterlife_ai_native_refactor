@@ -1,0 +1,752 @@
+/* ===================== DIARY CALENDAR PAGE STYLES ===================== */
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #F4DDB8; /* WHEAT */
+    color: #495235; /* DARK FERN */
+}
+
+/* 메인 컨텐츠 영역 중앙 정렬 */
+.contents_area {
+    background-color: transparent; /* 주황색 배경 제거 */
+    min-height: calc(100vh - 80px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem 0 0 0; /* 상단 패딩 추가 */
+    margin-top: 80px; /* 헤더 높이만큼 마진 추가 */
+    position: relative;
+    z-index: 1; /* 헤더보다 낮은 z-index */
+}
+
+.wrap_1280 {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 제목 섹션 중앙 정렬 */
+.page-title-section {
+    text-align: center;
+    margin-bottom: 0.5rem; /* 마진 줄임 */
+    width: 100%;
+}
+
+.page-title-section h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #90533B;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.page-title-section p {
+    font-size: 1.5rem;
+    color: #495235;
+    text-align: center;
+}
+
+/* 메인 섹션 컨테이너 중앙 정렬 */
+#diary-calendar-page-section {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding: 0 1rem;
+}
+
+/* 데스크톱에서 좌우 대칭 배치 */
+@media (min-width: 1024px) {
+    #diary-calendar-page-section {
+        flex-direction: row;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 2rem;
+    }
+}
+
+.container-card {
+    background-color: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #B87B5C; /* BROWN SUGAR */
+    width: 100%;
+    max-width: 580px;
+    position: relative;
+    z-index: 1; /* 헤더보다 낮은 z-index */
+}
+
+.section-title {
+    font-size: 1.75rem; /* text-3xl */
+    font-weight: 600; /* font-semibold */
+    color: #90533B; /* CHESTNUT */
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #B87B5C; /* BROWN SUGAR */
+    padding-bottom: 0.5rem;
+}
+
+.info-item { /* 기존 CSS에서 사용된 info-item 스타일 유지 */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px dashed #E0E0E0;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 500;
+    color: #495235;
+}
+
+.info-value {
+    color: #8F9562;
+    font-weight: 400;
+}
+
+/* Common button styles */
+.btn-main {
+    background-color: #DA983C; /* HARVEST GOLD */
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 1.25rem;
+    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.btn-main:hover {
+    background-color: #90533B; /* CHESTNUT */
+    transform: translateY(-2px);
+}
+
+.btn-submit {
+    background-color: #8F9562; /* MOSS GREEN */
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.btn-submit:hover {
+    background-color: #6B7280; /* GRAY */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(107, 114, 128, 0.3);
+}
+
+/* AI 코멘트 큰 박스 스타일 (7월 5일 기록처럼) */
+.ai-comment-box-large {
+    background: linear-gradient(135deg, #F5F5DC 0%, #F0E6D2 100%);
+    border: 2px solid #B87B5C;
+    border-radius: 1rem;
+    padding: 2rem;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(139, 69, 19, 0.1);
+    margin-bottom: 1rem;
+    min-height: 200px;
+}
+
+.stamp-image-comment-large {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+}
+
+.btn-nav { /* for calendar nav */
+    background-color: #B87B5C;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.6rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.btn-nav:hover {
+    background-color: #90533B;
+}
+
+/* New toggle button style */
+.btn-toggle {
+    background-color: #8F9562; /* MOSS GREEN */
+    color: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease-in-out;
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+}
+
+.btn-toggle:hover {
+    background-color: #495235; /* DARK FERN */
+}
+
+/* AI Chat button moved to action area */
+.btn-ai-chat-action {
+    background-color: #8F9562; /* MOSS GREEN */
+    color: white;
+    padding: 1rem 2.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    font-size: 1.25rem;
+    transition: background-color 0.2s ease-in-out;
+    width: 100%; /* 너비를 꽉 채우도록 */
+}
+
+.btn-ai-chat-action:hover {
+    background-color: #495235; /* DARK FERN */
+}
+
+/* Input field style */
+.input-field {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #B87B5C;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    color: #495235;
+    background-color: white;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #DA983C;
+    box-shadow: 0 0 0 2px rgba(218, 152, 60, 0.2);
+}
+
+/* AI Comment Box */
+.ai-comment-box {
+    background-color: #F4DDB8;
+    border: 1px solid #8F9562;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: visible;
+    display: flex; /* 내부 요소들을 flex로 정렬 */
+    flex-direction: column; /* 세로로 정렬 */
+    flex-shrink: 0; /* 이 요소는 줄어들지 않음 */
+}
+
+.stamp-image-comment {
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 120px;
+    height: 120px;
+    transform: rotate(10deg);
+    opacity: 0.85;
+    z-index: 10;
+}
+
+.record-item {
+    background-color: white;
+    border: 1px solid #B87B5C;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    color: #495235;
+}
+
+/* Calendar Styles */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.8rem; /* 달력 간격을 늘림 */
+    height: 380px; /* 달력 높이를 늘려서 상단 여백 채움 */
+    flex-shrink: 0; /* 부모 flex 컨테이너 내에서 줄어들지 않도록 함 */
+    width: 100%;
+    align-items: center;
+    justify-items: center;
+}
+
+.date-cell {
+    background-color: white;
+    border: 1px solid #B87B5C;
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    position: relative;
+    overflow: hidden;
+    color: #495235;
+    min-height: 60px;
+    min-width: 60px;
+}
+
+.date-cell:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.date-cell.has-diary {
+    background-color: #F4DDB8;
+    border-color: #8F9562;
+}
+
+.date-cell.today {
+    border: 2px solid #DA983C;
+    font-weight: bold;
+}
+
+.stamp-image-calendar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    transform: translate(-50%, -50%) rotate(10deg);
+    opacity: 1;
+    filter: drop-shadow(0 2px 6px rgba(60,40,120,0.18)) contrast(1.15) brightness(1.1);
+    pointer-events: none;
+    z-index: 2;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.stamp-image-calendar.loading {
+    opacity: 0;
+}
+
+
+
+.date-cell .date-number {
+    position: relative;
+    z-index: 3;
+    font-weight: bold;
+    font-size: 1.1em;
+    text-align: center;
+    line-height: 1;
+}
+
+/* 요일 헤더 스타일 */
+.calendar-grid > div:not(.date-cell) {
+    font-weight: 600;
+    color: #90533B;
+    font-size: 1rem;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.emotion-icon {
+    font-size: 1.3rem;
+    margin-top: 0.3rem;
+    color: #90533B;
+}
+
+/* Left Section: Calendar container */
+.left-section-container {
+    min-height: 750px; 
+    height: 870px; /* 고정 높이 설정 - 더 늘림 */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Right Section container */
+.right-section-container {
+    min-height: 750px; /* 왼쪽과 비슷한 최소 높이 보장 */
+    height: 870px; /* 왼쪽과 동일하게 고정 높이 설정 - 더 늘림 */
+    display: flex;
+    flex-direction: column;
+}
+
+/* 스크롤 가능한 기록 목록의 직접적인 부모를 지정 */
+.records-list-wrapper {
+    min-height: 200px; /* 최소 높이 보장 */
+    max-height: 350px; /* 최대 높이 제한 - 스크롤 생기도록 */
+    overflow-y: auto; /* 내부의 기록들만 스크롤되도록 */
+    padding: 1rem; /* 상자처럼 패딩 추가 */
+    padding-bottom: 1.5rem; /* 하단 패딩을 더 늘림 */
+    border: 1px solid #B87B5C; /* 얇은 테두리 추가 */
+    border-radius: 0.5rem; /* 모서리 둥글게 */
+    margin-bottom: 1rem; /* 하단 여백 추가 */
+    background-color: white; /* 배경색도 하얀색으로 통일 */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* 은은한 그림자 */
+}
+
+/* 오늘의 명언 블록 스타일 */
+.daily-quote-box {
+    background-color: #F4DDB8; /* WHEAT */
+    border: 1px dashed #DA983C; /* HARVEST GOLD */
+    border-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem; /* 새로운 기록 남기기 섹션과의 간격 */
+    text-align: center;
+    font-style: italic;
+    color: #90533B; /* CHESTNUT */
+    line-height: 1.5;
+    font-size: 1.1rem;
+}
+
+.modal-bg {
+    position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.3); z-index: 2000; display: flex; align-items: center; justify-content: center;
+}
+
+.modal-box {
+    background: white; border-radius: 1rem; padding: 2rem; min-width: 350px; max-width: 90vw;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+}
+
+.modal-close {
+    position: absolute; top: 1rem; right: 1rem; font-size: 1.5rem; color: #B87B5C; cursor: pointer;
+}
+
+.emotion-icon-modal { font-size: 2rem; margin-right: 0.5rem; }
+.stamp-image-modal { width: 60px; height: 60px; margin-left: 1rem; }
+
+/* Skeleton Loading Styles */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: 0.5rem;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.skeleton-calendar {
+    height: 380px;
+    width: 100%;
+}
+
+.skeleton-record {
+    height: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.skeleton-text {
+    height: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.skeleton-text:last-child {
+    width: 60%;
+}
+
+/* Loading overlay */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100; /* 컨테이너 내에서 높은 z-index */
+    border-radius: 1rem;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #DA983C;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Animation for record items */
+.record-item {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.record-item.fade-out {
+    animation: slideOut 0.3s ease-in forwards;
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+/* Enhanced hover effects for calendar */
+.date-cell {
+    transition: all 0.2s ease-in-out;
+}
+
+.date-cell:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.date-cell.selected {
+    border: 3px solid #DA983C;
+    background-color: #F4DDB8;
+    transform: scale(1.1);
+    z-index: 5;
+}
+
+/* Emotion button styles */
+.emotion-btn {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #B87B5C;
+    border-radius: 50%;
+    background: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.emotion-btn:hover {
+    transform: scale(1.1);
+    border-color: #DA983C;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.emotion-btn.selected {
+    background-color: #F4DDB8;
+    border-color: #DA983C;
+    transform: scale(1.1);
+}
+
+/* ===================== NEW EMOTION STATS STYLES ===================== */
+/* 2025-01-XX: 주요 감정 표시 스타일 추가 */
+.emotion-stats {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.emotion-stat-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background-color: #F4DDB8;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    color: #90533B;
+    border: 1px solid #B87B5C;
+    margin: 0 0.25rem;
+}
+
+.emotion-stat-count {
+    font-size: 0.8rem;
+    color: #8F9562;
+    font-weight: 500;
+}
+
+/* 달력 하단 정보 섹션 스타일 */
+.calendar-info-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.calendar-info-section p {
+    margin: 0;
+    white-space: nowrap;
+}
+
+.weekly-reports-section::-webkit-scrollbar {
+    width: 6px;
+}
+
+.weekly-reports-section::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.weekly-reports-section::-webkit-scrollbar-thumb {
+    background: #B87B5C;
+    border-radius: 3px;
+}
+
+.weekly-reports-section::-webkit-scrollbar-thumb:hover {
+    background: #90533B;
+}
+
+/* 왼쪽 섹션 스크롤 제거 */
+.left-section-container {
+    overflow: hidden;
+    position: relative;
+}
+
+/* 주차별 리포트 섹션 스타일 */
+.weekly-reports-section {
+    min-height: 200px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    margin-bottom: 0rem;
+    margin-top: 2rem; /* 상단 여백을 늘려서 아래로 내림 */
+    flex: 1;
+}
+
+/* 오른쪽 섹션 스크롤바 스타일 (브라운 계열 유지) */
+.records-list-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.records-list-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.records-list-wrapper::-webkit-scrollbar-thumb {
+    background: #B87B5C;
+    border-radius: 3px;
+}
+
+.records-list-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #90533B;
+}
+
+/* 헤더 스타일 조정 */
+.header {
+    background-color: #F4DDB8;
+    border-bottom: 2px solid #B87B5C;
+}
+
+.nav-logo h1 {
+    color: #90533B;
+    font-weight: bold;
+}
+
+.nav-link {
+    color: #495235;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    background-color: #B87B5C;
+    color: white;
+}
+
+.nav-link.active {
+    background-color: #90533B;
+    color: white;
+}
+
+.nav-link.active:hover {
+    background-color: #8F9562;
+    color: white;
+}
+
+/* ===================== END NEW EMOTION STATS STYLES ===================== */
+
+/* 스탬프 선택 UI 스타일 */
+.stamp-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    background: white;
+    min-width: 80px;
+}
+
+.stamp-option:hover {
+    border-color: #DA983C;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(218, 152, 60, 0.2);
+}
+
+.stamp-option.selected {
+    border-color: #DA983C;
+    background: #fef3c7;
+    box-shadow: 0 4px 8px rgba(218, 152, 60, 0.3);
+}
+
+.stamp-option-image {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    margin-bottom: 4px;
+}
+
+.stamp-option-name {
+    font-size: 12px;
+    color: #495235;
+    text-align: center;
+    font-weight: 500;
+}
+
+.stamp-option.selected .stamp-option-name {
+    color: #DA983C;
+    font-weight: 600;
+}
+
+/* 미리보기 스탬프 애니메이션 */
+.stamp-image-calendar.preview {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.7;
+        transform: translate(-50%, -50%) rotate(5deg) scale(1);
+    }
+    50% {
+        opacity: 0.9;
+        transform: translate(-50%, -50%) rotate(5deg) scale(1.1);
+    }
+    100% {
+        opacity: 0.7;
+        transform: translate(-50%, -50%) rotate(5deg) scale(1);
+    }
+} 

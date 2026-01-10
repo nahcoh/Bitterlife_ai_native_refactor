@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>인생, 쓰다 - 일기 기록 및 달력</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="stylesheet" th:href="@{/css/header.css}" />
+    <link rel="stylesheet" th:href="@{/css/diary_calendar.css}" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script th:src="@{/js/diary_calendar.js}" defer></script>
+</head>
+<body>
+    <!-- 헤더 네비게이션 -->
+    <div th:replace="~{layout/header :: navbar}"></div>
+    
+    <!-- 메인 컨텐츠 영역 -->
+    <div class="contents_area">
+        <div class="wrap_1280">
+            <div class="page-title-section">
+                <h1>일기 기록 및 달력</h1>
+                <p>당신의 소중한 순간들을 기록하세요</p>
+            </div>
+
+            <section id="diary-calendar-page-section">
+                <div class="container-card left-section-container">
+                    <div class="flex justify-between items-center mb-6">
+                        <button id="prev-month-btn" class="btn-nav">&lt; 이전 달</button>
+                        <h2 id="calendar-title" class="text-3xl font-semibold text-[#90533B]"></h2>
+                        <button id="next-month-btn" class="btn-nav">다음 달 &gt;</button>
+                    </div>
+                    <div id="calendar-grid" class="calendar-grid mb-4"></div>
+                    <div class="text-center text-base text-[#8F9562] mt-4">
+                        <div class="calendar-info-section">
+                            <p id="calendar-summary">이번 달 일기: 0일 작성 | 연속 기록: 0일</p>
+                            <p id="calendar-emotions">주요 감정: -</p>
+                        </div>
+                    </div>
+                    <div class="mt-8 weekly-reports-section">
+                        <h3 class="text-xl font-semibold text-[#90533B] mb-4">주차별 감정 리포트</h3>
+                        <div id="weekly-reports-list" class="space-y-3"></div>
+                    </div>
+                </div>
+
+                <div class="container-card flex flex-col right-section-container"> 
+                    <!-- 기록 목록 섹션 (스크롤 가능) -->
+                    <div class="flex-shrink-0 mb-4"> 
+                        <div class="flex justify-between items-center mb-3">
+                            <h2 class="block text-xl font-semibold text-[#90533B]">오늘의 짧은 기록들</h2>
+                            <button id="search-toggle-btn" class="text-[#8F9562] hover:text-[#495235] transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <!-- Search Bar -->
+                        <div id="search-bar" class="mb-3 hidden">
+                            <input type="text" id="search-input" class="w-full input-field" placeholder="기록 내용을 검색해보세요...">
+                        </div>
+                    </div>
+                    
+                    <!-- 스크롤 가능한 기록 목록 -->
+                    <div class="records-list-wrapper flex-1"> 
+                        <div id="today-records-list-scrollable" class="space-y-2"> 
+                            <div id="no-records-placeholder" class="text-center text-[#8F9562] py-8">
+                                아직 오늘의 기록이 없습니다.<br>첫 번째 기록을 남겨보세요!
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 오늘의 명언 블록 -->
+                    <div class="daily-quote-box">
+                        <p id="daily-quote-text">오늘의 작은 기록이 내일의 큰 변화를 만듭니다.</p>
+                    </div>
+
+                    <!-- AI 코멘트 섹션 (기본적으로 숨김) -->
+                    <div id="ai-comment-section" class="flex-shrink-0 hidden">
+                        <div class="ai-comment-box">
+                            <img src="/image/default_stamp.png" alt="참잘했어요 스탬프" class="stamp-image-comment">
+                            <p id="ai-comment-text" class="text-[#495235] leading-relaxed mb-3">
+                                사랑하는 제자님, 오늘 남겨주신 소중한 기록들을 읽었어요.
+                                작은 순간들이 모여 제자님의 하루를 아름답게 채우고 있네요.
+                                오늘의 기록을 통해 [감정 키워드 예시: 기쁨, 평온]이 느껴집니다.
+                                꾸준히 자신을 돌아보는 모습이 참 대견해요.
+                            </p>
+                            <p id="emotion-keywords" class="text-[#8F9562] text-sm font-medium">
+                                오늘의 감정 키워드: #기쁨 #평온 #대견함 #일상
+                            </p>
+                        </div>
+                        
+                        <!-- AI와 채팅하기 버튼 -->
+                        <button id="ai-chat-button" class="btn-ai-chat-action mt-4">
+                            AI와 채팅하기
+                        </button>
+                    </div>
+
+                    <!-- 새로운 기록 남기기 섹션 -->
+                    <div id="new-record-section" class="flex-shrink-0">
+                        <h3 class="text-lg font-semibold text-[#90533B] mb-3">새로운 기록 남기기</h3>
+                        
+                        <!-- 감정 선택 버튼들 -->
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-[#495235] mb-2">오늘의 감정을 선택해주세요:</label>
+                            <div class="flex gap-2 flex-wrap">
+                                <button class="emotion-btn" data-emotion="😊">😊</button>
+                                <button class="emotion-btn" data-emotion="😢">😢</button>
+                                <button class="emotion-btn" data-emotion="😡">😡</button>
+                                <button class="emotion-btn" data-emotion="😌">😌</button>
+                                <button class="emotion-btn" data-emotion="🤔">🤔</button>
+                                <button class="emotion-btn" data-emotion="😍">😍</button>
+                                <button class="emotion-btn" data-emotion="😴">😴</button>
+                                <button class="emotion-btn" data-emotion="😎">😎</button>
+                            </div>
+                        </div>
+                        
+
+                        
+                        <!-- 기록 입력 필드 -->
+                        <div class="mb-4">
+                            <textarea id="diary-content" class="input-field" rows="3" placeholder="오늘의 생각이나 감정을 자유롭게 기록해보세요..."></textarea>
+                        </div>
+                        
+                        <!-- 저장 버튼들 -->
+                        <div class="flex gap-2">
+                            <button id="save-diary-btn" class="btn-main flex-1">생각 기록하기</button>
+                            <button id="submit-diary-btn" class="btn-submit flex-1">일기 제출</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+</html> 

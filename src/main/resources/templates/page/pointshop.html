@@ -1,0 +1,79 @@
+<div th:fragment="content">
+    <link rel="stylesheet" th:href="@{/css/pointshop.css}" />
+    
+    <div class="container-card">
+        <header class="pointshop-header">
+            <h1>인생, 쓰다</h1>
+            <p>포인트 샵</p>
+        </header>
+
+        <div id="top-control-area" class="flex justify-between items-center mb-8">
+            <button id="back-arrow-btn" class="btn-nav-arrow hidden">←</button>
+            <div class="flex-grow flex justify-center">
+                <div class="point-display">
+                    <span role="img" aria-label="coin">💰</span>
+                    현재 포인트: <span id="current-points" class="ml-2 text-[#DA983C]">0</span> P
+                </div>
+            </div>
+        </div>
+        
+        <div id="shop-items-section">
+            <div class="section-title">
+                <h2>도장 상점</h2>
+                <div class="flex items-center">
+                    <label for="stamp-filter" class="mr-2 font-semibold text-[#90533B]"></label>
+                    <select id="stamp-filter" class="border rounded px-2 py-1 text-sm">
+                        <option value="all" class="text-sm">전체</option>
+                        <option value="buyable" class="text-sm">구매가능</option>
+                        <option value="owned" class="text-sm">보유중</option>
+                        <option value="notowned" class="text-sm">미보유</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- JavaScript가 동적으로 렌더링할 영역 -->
+            </div>
+        </div>
+
+        <div id="my-stamps-collection-section" class="hidden">
+            <div class="section-title">
+                <h2>내가 보유한 도장</h2>
+                <button id="go-to-shop-btn-in-my-stamps-section-title" class="btn-view-toggle">상점으로 돌아가기</button>
+            </div>
+            
+            <div id="owned-stamps-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- JavaScript가 동적으로 렌더링할 영역 -->
+            </div>
+        </div>
+    </div>
+
+    <div id="point-insufficient-popup" class="popup-overlay hidden">
+        <div class="popup-content">
+            <h3>포인트 부족</h3>
+            <p>포인트가 부족합니다. 현재 포인트: <span id="popup-current-points"></span> P</p>
+            <p style="font-size: 0.9rem; color: #8F9562; margin-top: 0.5rem;">
+                💡 포인트를 모으려면 일기를 작성하거나 다양한 활동을 해보세요!
+            </p>
+            <button id="close-popup-btn">확인</button>
+        </div>
+    </div>
+
+    <div id="purchase-success-popup" class="popup-overlay hidden">
+        <div class="popup-content">
+            <h3>구매 성공!</h3>
+            <p>도장을 성공적으로 구매했습니다.</p>
+            <button id="close-success-popup-btn">확인</button>
+        </div>
+    </div>
+
+    <div id="apply-success-popup" class="popup-overlay hidden">
+        <div class="popup-content">
+            <h3>적용 성공!</h3>
+            <p>도장을 성공적으로 적용했습니다.</p>
+            <button id="close-apply-success-popup-btn">확인</button>
+        </div>
+    </div>
+
+    <script th:src="@{/js/pointshop.js}"></script>
+</div>

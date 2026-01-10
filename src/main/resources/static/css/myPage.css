@@ -1,0 +1,111 @@
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #F4DDB8; /* WHEAT */
+    color: #495235; /* DARK FERN */
+}
+.container-card {
+    background-color: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #B87B5C; /* BROWN SUGAR */
+}
+.section-title {
+    font-size: 1.75rem; /* text-3xl */
+    font-weight: 600; /* font-semibold */
+    color: #90533B; /* CHESTNUT */
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #B87B5C; /* BROWN SUGAR */
+    padding-bottom: 0.5rem;
+}
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px dashed #E0E0E0; /* Light gray for subtle separation */
+}
+.info-item:last-child {
+    border-bottom: none;
+}
+.info-label {
+    font-weight: 500;
+    color: #495235; /* DARK FERN */
+}
+.info-value {
+    color: #8F9562; /* MOSS GREEN */
+    font-weight: 400;
+}
+.btn-action {
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease-in-out;
+    width: 100%;
+    text-align: center;
+}
+.btn-link {
+    background-color: transparent;
+    color: #8F9562; /* MOSS GREEN */
+    padding: 0.75rem 0;
+    font-weight: 500;
+    transition: color 0.2s ease-in-out;
+    width: 100%;
+    text-align: center;
+}
+.btn-link:hover {
+    color: #495235; /* DARK FERN */
+}
+.btn-group-horizontal {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.btn-group-horizontal .btn-link {
+    flex: 1 1 30%;
+    min-width: 120px;
+    padding: 0.75rem 0.5rem;
+}
+.profile-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #F4DDB8; /* WHEAT */
+    border: 2px solid #B87B5C; /* BROWN SUGAR */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    color: #90533B;
+    overflow: hidden;
+}
+.stamp-image-preview {
+    width: 60px;
+    height: 60px;
+    opacity: 0.8;
+    transform: rotate(-10deg);
+}
+/* 시간 선택 드롭다운 스타일 */
+.time-select {
+    width: 100px; /* 드롭다운 너비 조절 */
+    padding: 0.5rem;
+    border: 1px solid #B87B5C;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    color: #495235;
+    background-color: white;
+    appearance: none; /* 기본 드롭다운 화살표 제거 */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23495235%22%20d%3D%22M287%2C114.1L146.2%2C254.9L5.4%2C114.1L5.4%2C114.1L146.2%2C25.3l140.8%2C88.8z%22%2F%3E%3C%2Fsvg%3E'); /* 사용자 정의 화살표 */
+    background-repeat: no-repeat;
+    background-position: right 0.7em top 50%, 0 0;
+    background-size: 0.65em auto, 100%;
+}
+.time-select:focus {
+    outline: none;
+    border-color: #DA983C;
+    box-shadow: 0 0 0 2px rgba(218, 152, 60, 0.2);
+}

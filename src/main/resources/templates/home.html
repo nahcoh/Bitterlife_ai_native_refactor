@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Rebuild Project</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 600px;
+            margin: 2rem;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+        .message {
+            color: #666;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        .tech-item {
+            background: #f8f9fa;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            color: #495057;
+            font-weight: 500;
+            border: 2px solid #e9ecef;
+        }
+        .status {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .test-section {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        
+        .test-section h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .test-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e9ecef;
+        }
+        
+        .test-item h3 {
+            color: #495057;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .test-result {
+            background: #e7f3ff;
+            color: #0c5460;
+            padding: 0.75rem;
+            border-radius: 6px;
+            border-left: 4px solid #17a2b8;
+            font-weight: 500;
+        }
+        
+        .message-form {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .message-form input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        .message-form button {
+            padding: 0.75rem 1.5rem;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .message-form button:hover {
+            background: #0056b3;
+        }
+        
+        .message-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .message-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .message-item:last-child {
+            border-bottom: none;
+        }
+        
+        .message-text {
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .message-time {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Rebuild Project</h1>
+        <a href="/diary-calendar" style="display:inline-block;margin-bottom:1.5rem;padding:0.75rem 2rem;background:#DA983C;color:white;border-radius:8px;font-weight:600;text-decoration:none;">일기 달력으로 이동</a>
+        <div class="message" th:text="${message}">메시지</div>
+        
+        <div class="tech-stack">
+            <div class="tech-item">Spring Boot 3.2.0</div>
+            <div class="tech-item">Java 21</div>
+            <div class="tech-item">Jakarta EE 10</div>
+            <div class="tech-item">MySQL 8.2</div>
+            <div class="tech-item">Thymeleaf</div>
+            <div class="tech-item">JPA/Hibernate</div>
+        </div>
+        
+        <div class="status">
+            ✅ 프로젝트가 성공적으로 구성되었습니다!
+        </div>
+        
+        <div class="test-section">
+            <h2>🧪 테스트 섹션</h2>
+            
+            <div class="test-item">
+                <h3>Hello World 테스트</h3>
+                <div class="test-result" th:text="${helloWorld}">Hello World</div>
+            </div>
+            
+            <div class="test-item">
+                <h3>데이터베이스 연결 테스트</h3>
+                <div class="test-result" th:text="${dbStatus}">DB Status</div>
+            </div>
+            
+            <div class="test-item">
+                <h3>메시지 저장 테스트</h3>
+                <form th:action="@{/save-message}" method="post" class="message-form">
+                    <input type="text" name="message" placeholder="테스트 메시지를 입력하세요" required>
+                    <button type="submit">저장</button>
+                </form>
+            </div>
+            
+            <div class="test-item" th:if="${!messages.isEmpty()}">
+                <h3>저장된 메시지 목록</h3>
+                <div class="message-list">
+                    <div class="message-item" th:each="msg : ${messages}">
+                        <span class="message-text" th:text="${msg.message}">메시지</span>
+                        <span class="message-time" th:text="${msg.createdAt}">시간</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

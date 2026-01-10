@@ -1,0 +1,151 @@
+<div th:fragment="content">
+    <!-- CSS와 JS 파일 직접 참조 -->
+    <link rel="stylesheet" th:href="@{/css/index.css}" />
+    <script th:src="@{/js/index.js}" defer></script>
+    
+    <!-- 메인 페이지 컨테이너 -->
+    <div class="main-page-container">
+        <section class="main-page-section">
+            <h1 class="main-title">인생, 쓰다</h1>
+            <p id="main-quote-display" class="quote-text">
+                "당신의 하루는 기록될 가치가 있습니다."
+            </p>
+
+            <div id="main-auth-buttons" class="auth-buttons">
+                <!-- 버튼들이 JavaScript로 동적 생성됨 -->
+            </div>
+        </section>
+
+        <section id="main-service-features-section" class="service-features-section">
+            <h2 class="section-title">
+                '인생, 쓰다'는 당신의 감정을 위한 따뜻한 공간입니다.
+            </h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3 class="text-2xl font-semibold text-[#90533B] mb-3">따뜻한 선생님 코멘트</h3>
+                    <p class="text-[#495235] leading-relaxed">
+                        매일 기록하는 당신의 이야기에, AI 선생님이 '참 잘했어요' 도장과 함께 따뜻한 격려와 조언을 남겨드려요.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3 class="text-2xl font-semibold text-[#90533B] mb-3">나의 감정 리포트</h3>
+                    <p class="text-[#495235] leading-relaxed">
+                        일기 속 감정 변화를 분석하여 주간/월간 리포트를 발행하고, 스스로를 객관적으로 이해할 수 있도록 돕습니다.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💡</div>
+                    <h3 class="text-2xl font-semibold text-[#90533B] mb-3">맞춤형 놀이/행동 추천</h3>
+                    <p class="text-[#495235] leading-relaxed">
+                        당신의 감정 상태에 맞춰 기분 전환에 도움이 될 만한 활동들을 AI가 제안해 드립니다.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3 class="text-2xl font-semibold text-[#90533B] mb-3">AI 상담사와 대화</h3>
+                    <p class="text-[#495235] leading-relaxed">
+                        리포트 내용을 기반으로 AI와 대화하며, 당신의 감정을 더 깊이 탐색하고 성찰할 수 있습니다.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">✍️</div>
+                    <h3 class="text-2xl font-semibold text-[#90533B] mb-3">부담 없는 한 줄 기록</h3>
+                    <p class="text-[#495235] leading-relaxed">
+                        긴 일기가 아니어도 괜찮아요. 하루 중 떠오르는 생각이나 감정을 한두 줄로 가볍게 기록해보세요.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="login-form-section" class="form-section py-10 hidden">
+            <div class="form-card">
+                <button class="close-btn" onclick="hideForm('login')">&times;</button>
+                <h2 class="text-3xl font-bold text-[#90533B] text-center mb-8">로그인</h2>
+                <form id="login-form" onsubmit="handleLoginSubmit(event)">
+                    <div class="form-group">
+                        <label for="login-email" class="form-label">이메일</label>
+                        <input type="email" id="login-email" class="form-input" name="email" placeholder="이메일을 입력해주세요" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password" class="form-label">비밀번호</label>
+                        <input type="password" id="login-password" class="form-input" name="password" placeholder="비밀번호를 입력해주세요" required>
+                    </div>
+                    <div class="form-group flex">
+                        <div class="flex">
+                            <input type="checkbox" id="remember-me" class="mr-2" name="rememberMe">
+                            <label for="remember-me" class="text-sm text-[#495235]">ID 기억하기</label>
+                        </div>
+                        <a href="#" class="text-sm text-[#8F9562] hover:text-[#495235]">ID/PW 찾기</a>
+                    </div>
+                    <button type="submit" class="btn-main w-full mb-4">로그인</button>
+                    <button type="button" class="btn-kakao w-full flex items-center justify-center gap-2">
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.477 2 2 6.477 2 12c0 3.003 1.305 5.683 3.364 7.555l-1.045 2.118c-.14.283-.053.626.208.799.261.173.604.103.743-.18l1.045-2.118C7.695 20.695 9.773 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 1.6c4.63 0 8.4 3.77 8.4 8.4 0 4.63-3.77 8.4-8.4 8.4-2.027 0-3.874-.72-5.32-1.92l-.08-.06-.06-.08c-1.2-1.446-1.92-3.293-1.92-5.32 0-4.63 3.77-8.4 8.4-8.4zM12 6.8c-2.81 0-5.1 2.29-5.1 5.1 0 2.81 2.29 5.1 5.1 5.1 2.81 0 5.1-2.29 5.1-5.1 0-2.81-2.29-5.1-5.1-5.1zm0 1.6c1.93 0 3.5 1.57 3.5 3.5 0 1.93-1.57 3.5-3.5 3.5-1.93 0-3.5-1.57-3.5-3.5 0-1.93 1.57-3.5 3.5-3.5z"/>
+                        </svg>
+                        카카오로 로그인
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <section id="registration-form-section" class="form-section py-10 hidden">
+            <div class="form-card">
+                <button class="close-btn" onclick="hideForm('register')">&times;</button>
+                <h2 class="text-3xl font-bold text-[#90533B] text-center mb-8">회원가입</h2>
+                <form action="/register" method="POST">
+                    <div class="form-group">
+                        <label for="reg-name" class="form-label">이름 (닉네임)</label>
+                        <input type="text" id="reg-name" class="form-input" name="userNickname" placeholder="이름 (닉네임)을 입력해주세요" required>
+                        <div id="nickname-error" class="error-message">중복된 닉네임입니다.</div>
+                        <div id="nickname-success" class="success-message">사용 가능한 닉네임입니다.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-email" class="form-label">이메일</label>
+                        <input type="email" id="reg-email" class="form-input" name="userEmail" placeholder="이메일을 입력해주세요" required>
+                        <div id="email-error" class="error-message">중복된 이메일입니다.</div>
+                        <div id="email-success" class="success-message">사용 가능한 이메일입니다.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password" class="form-label">비밀번호</label>
+                        <input type="password" id="reg-password" class="form-input" name="userPassword" placeholder="비밀번호 (8-20자)" required>
+                        <div id="password-error" class="error-message">비밀번호는 8-20자 사이여야 합니다.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-confirm-password" class="form-label">비밀번호 확인</label>
+                        <input type="password" id="reg-confirm-password" class="form-input" name="confirmPassword" placeholder="비밀번호를 다시 입력해주세요" required>
+                        <div id="confirm-password-error" class="error-message">비밀번호가 일치하지 않습니다.</div>
+                        <div id="confirm-password-success" class="success-message">비밀번호가 일치합니다.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-phone" class="form-label">전화번호</label>
+                        <input type="tel" id="reg-phone" class="form-input" name="userPhone" placeholder="010-XXXX-XXXX" required>
+                        <div id="phone-error" class="error-message">올바른 전화번호 형식을 입력해주세요. (예: 010-1234-5678)</div>
+                        <div id="phone-success" class="success-message">올바른 전화번호 형식입니다.</div>
+                    </div>
+                    <div class="form-group flex">
+                        <button type="button" class="btn-link text-[#8F9562] hover:text-[#495235] text-sm" onclick="alert('이용약관 팝업')">약관 보기</button>
+                        <div class="flex">
+                            <input type="checkbox" id="terms-agree" class="mr-2" name="termsAgreed" value="true" required>
+                            <label for="terms-agree" class="text-sm text-[#495235]">약관을 확인하였고 동의합니다.</label>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-kakao w-full flex items-center justify-center gap-2 mb-4">
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.477 2 2 6.477 2 12c0 3.003 1.305 5.683 3.364 7.555l-1.045 2.118c-.14.283-.053.626.208.799.261.173.604.103.743-.18l1.045-2.118C7.695 20.695 9.773 22 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 1.6c4.63 0 8.4 3.77 8.4 8.4 0 4.63-3.77 8.4-8.4 8.4-2.027 0-3.874-.72-5.32-1.92l-.08-.06-.06-.08c-1.2-1.446-1.92-3.293-1.92-5.32 0-4.63 3.77-8.4 8.4-8.4zM12 6.8c-2.81 0-5.1 2.29-5.1 5.1 0 2.81 2.29 5.1 5.1 5.1 2.81 0 5.1-2.29 5.1-5.1 0-2.81-2.29-5.1-5.1-5.1zm0 1.6c1.93 0 3.5 1.57 3.5 3.5 0 1.93-1.57 3.5-3.5 3.5-1.93 0-3.5-1.57-3.5-3.5 0-1.93 1.57-3.5 3.5-3.5z"/>
+                        </svg>
+                        카카오 아이디로 가입하기
+                    </button>
+                    <button type="submit" id="register-submit-btn" class="btn-main w-full" disabled>회원가입 완료</button>
+
+                </form>
+            </div>
+        </section>
+    </div>
+</div> 

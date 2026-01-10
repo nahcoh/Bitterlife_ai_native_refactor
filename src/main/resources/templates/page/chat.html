@@ -1,0 +1,50 @@
+<div th:fragment="content">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- 채팅 전용 CSS -->
+    <link rel="stylesheet" th:href="@{/css/chat.css}" />
+    
+    <div class="container-card">
+        <div class="chat-header">
+            <button class="back-button" id="back-button">
+                ← 뒤로가기
+            </button>
+            <h1>인생, 쓰다</h1>
+            <p>선생님과 채팅</p>
+            <!-- 일기 정보 표시 -->
+            <div th:if="${diaryDate}" class="diary-info">
+                <span th:text="${diaryDate} + ' 일기와 함께'"></span>
+            </div>
+        </div>
+        <div class="chat-container" id="chat-container">
+            <div class="message-bubble ai-bubble">
+                <p>안녕하세요, 제자님! 오늘은 어떤 이야기를 나누고 싶으신가요?</p>
+            </div>
+            <div id="typing-indicator" style="display: none;">선생님이 입력 중...</div>
+        </div>
+        <div class="input-area">
+            <textarea id="chat-input" placeholder="메시지를 입력하세요..." rows="1"></textarea>
+            <button id="send-button">➔</button>
+        </div>
+    </div>
+
+    <!-- 팝업 오버레이 -->
+    <div class="popup-overlay" id="popup-overlay">
+        <div class="popup-content">
+            <h3>대화 종료</h3>
+            <p>대화를 종료하시겠습니까?<br>종료 전에 대화 요약을 보여드린 후 페이지를 닫습니다.</p>
+
+            <div class="popup-buttons">
+                <button class="popup-button cancel" id="cancel-button">아니오</button>
+                <button class="popup-button confirm" id="confirm-button">예</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 채팅 전용 JavaScript -->
+    <script th:src="@{/js/chat.js}"></script>
+</div> 

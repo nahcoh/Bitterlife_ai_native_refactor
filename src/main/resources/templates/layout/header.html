@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <!-- 헤더 네비게이션 -->
+    <header th:fragment="navbar" class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <!-- 로고 영역 -->
+                <div class="nav-logo">
+                    <a th:href="@{/}" class="logo-link">
+                        <h1>Diary App</h1>
+                    </a>
+                </div>
+                
+                <!-- 네비게이션 메뉴 -->
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a th:href="@{/}" class="nav-link">홈</a>
+                    </li>
+                    <!-- 로그인 상태 확인: session에 'user'가 없으면 버튼 비활성화 -->
+                    <li class="nav-item">
+                        <a th:href="@{/diary}"
+                        th:classappend="${session.user} == null ? ' disabled-link' : ''"
+                        th:attr="tabindex=${session.user} == null ? -1 : null"
+                        class="nav-link">일기/달력</a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:href="@{/report}"
+                        th:classappend="${session.user} == null ? ' disabled-link' : ''"
+                        th:attr="tabindex=${session.user} == null ? -1 : null"
+                        class="nav-link">리포트</a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:href="@{/mypage}"
+                        th:classappend="${session.user} == null ? ' disabled-link' : ''"
+                        th:attr="tabindex=${session.user} == null ? -1 : null"
+                        class="nav-link">마이페이지</a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:href="@{/chat}"
+                        th:classappend="${session.user} == null ? ' disabled-link' : ''"
+                        th:attr="tabindex=${session.user} == null ? -1 : null"
+                        class="nav-link">채팅</a>
+                    </li>
+                    <li class="nav-item">
+                        <a th:href="@{/pointshop}"
+                        th:classappend="${session.user} == null ? ' disabled-link' : ''"
+                        th:attr="tabindex=${session.user} == null ? -1 : null"
+                        class="nav-link">포인트샵</a>
+
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+</body>
+</html> 

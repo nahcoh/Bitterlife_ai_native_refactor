@@ -1,0 +1,104 @@
+<div th:fragment="content" class="w-full max-w-3xl mx-auto">
+    <link rel="stylesheet" th:href="@{/css/myPage.css}" />
+    <script th:src="@{/js/myPage.js}" defer></script>
+
+    <div class="w-full max-w-4xl text-center mb-10">
+        <h1 class="text-5xl font-bold text-[#90533B] mb-2">인생, 쓰다</h1>
+        <p class="text-2xl text-[#495235]">마이페이지</p>
+    </div>
+
+    <div class="w-full max-w-3xl container-card space-y-8">
+        <section>
+            <h2 class="section-title">내 정보</h2>
+            <div class="flex flex-col items-center mb-6">
+                <div class="profile-image mb-4">
+                    <span>🙂</span>
+                </div>
+                <h3 class="text-2xl font-bold text-[#90533B] mb-1" th:text="${summary.nickname}">사용자명 (닉네임)</h3>
+                <p class="text-base text-[#8F9562]" th:text="${summary.email}">example@email.com</p>
+                <p class="text-sm text-[#B87B5C] mt-2" th:text="${#temporals.format(summary.joinDate, 'yyyy년 M월부터 함께하고 있어요')}">2025년 1월부터 함께하고 있어요</p>
+            </div>
+            <div class="space-y-3">
+                <button class="btn-action bg-[#8F9562] hover:bg-[#495235]">프로필 수정</button>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn-action bg-red-500 hover:bg-red-600">로그아웃</button>
+                </form>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">나의 활동 요약</h2>
+            <div class="space-y-3">
+                <div class="info-item">
+                    <span class="info-label">총 일기 작성 수</span>
+                    <span class="info-value" th:text="${summary.totalDiaryCount}">123개</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">연속 일기 작성 일수</span>
+                    <span class="info-value" th:text="${summary.consecutiveDiaryDays}">7일</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">주요 감정 상태</span>
+                    <span class="info-value">
+                        <span th:each="emotion : ${summary.mainEmotions}" th:text="${emotion}"></span>
+                    </span>
+                </div>
+                <div class="info-item flex-col items-start">
+                    <span class="info-label mb-2">최근 AI 코멘트</span>
+                    <div class="flex items-center text-sm text-[#495235] bg-[#F4DDB8] p-3 rounded-lg border border-[#B87B5C] w-full">
+                        <img th:src="@{/{img}(img=${summary.recentStampImage})}" alt="참 잘했어요 스탬프" class="stamp-image-preview mr-3">
+                        <span th:text="${summary.recentAiComment}">제자님, 오늘도 하루를 잘 기록했네요! 작은 노력이 큰 변화를 만든답니다.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 이하 영역은 기존 html과 동일하게 유지, 필요시 Thymeleaf로 확장 가능 -->
+        <section>
+            <h2 class="section-title">리포트 및 상담</h2>
+            <div class="space-y-3">
+                <a href="/report" class="btn-action bg-[#DA983C] hover:bg-[#B87B5C] block text-center">나의 감정 리포트 보러 가기</a>
+                <a href="/chat" class="btn-action bg-[#8F9562] hover:bg-[#495235] block text-center">선생님과 대화하기</a>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">알림 설정</h2>
+            <div class="space-y-4">
+                <form th:action="@{/mypage/comment-time}" method="post" class="flex flex-col space-y-2">
+                    <div class="flex items-center space-x-4">
+                        <span class="info-label whitespace-nowrap">선생님께 코멘트 받을 시간:</span>
+                        <select id="comment-hour" name="commentHour" class="time-select">
+                            <option th:each="h : ${#numbers.sequence(0,23)}" th:value="${h}" th:text="${h}" th:selected="${h} == ${summary.commentTime}"></option>
+                        </select>
+                        <span class="info-label">시</span>
+                    </div>
+                    <button type="submit" class="btn-action bg-[#DA983C] hover:bg-[#90533B] w-full">시간 저장</button>
+                </form>
+            </div>
+        </section>
+        <section>
+            <h2 class="section-title">데이터 관리</h2>
+            <div class="space-y-3">
+                <button class="btn-action bg-[#DA983C] hover:bg-[#B87B5C]">일기 데이터 내보내기 (PDF/텍스트)</button>
+                <button class="btn-action bg-[#B87B5C] hover:bg-[#90533B]">모든 데이터 삭제 (복구 불가)</button>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">앱 정보 및 계정</h2>
+            <div class="space-y-3">
+                <div class="info-item">
+                    <span class="info-label">앱 버전</span>
+                    <span class="info-value">1.0.0</span>
+                </div>
+                <div class="btn-group-horizontal mb-2">
+                    <button class="btn-link">이용약관</button>
+                    <button class="btn-link">개인정보처리방침</button>
+                    <button class="btn-link">문의하기</button>
+                </div>
+                <button class="btn-link text-red-500 hover:text-red-700">회원 탈퇴</button>
+            </div>
+        </section>
+    </div>
+</div>
