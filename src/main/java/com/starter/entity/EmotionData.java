@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "emotion_data")
+@Table(name = "emotion_data", indexes = @Index(name = "idx_emotion_name", columnList = "name"))
 @Getter
 @NoArgsConstructor
 public class EmotionData extends BaseTimeEntity {

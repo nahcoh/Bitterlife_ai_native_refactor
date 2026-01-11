@@ -96,12 +96,7 @@ public class User extends BaseTimeEntity {
         this.failedLogin = 0;
     }
 
-    /**
-     * 마지막 로그인 시간을 현재 시간으로 업데이트하는 메서드
-     */
-    public void updateLastLogin() {
-        this.lastLogin = LocalDateTime.now();
-    }
+
 
     /**
      * 사용자를 소프트 삭제하는 메서드

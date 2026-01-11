@@ -40,13 +40,13 @@ public class PointshopService {
         List<StampDto> result = new ArrayList<>();
         for (Stamp stamp : stamps) {
             StampDto dto = new StampDto();
-            dto.setStampId(stamp.getStampId());
+            dto.setStampId(stamp.getId());
             dto.setName(stamp.getName());
             dto.setImage(stamp.getImage());
             dto.setQualification(stamp.getQualification());
             dto.setPrice(stamp.getPrice());
             dto.setDescription(stamp.getDescription());
-            dto.setStatus(stamp.getStatus());
+            dto.setStatus(String.valueOf(stamp.getStatus()));
             dto.setSalesAt(stamp.getSalesAt());
             dto.setSalesEnd(stamp.getSalesEnd());
             result.add(dto);
@@ -72,7 +72,7 @@ public class PointshopService {
             System.out.println("=== 구매 시도 ===");
             System.out.println("사용자 ID: " + userId);
             System.out.println("도장 ID: " + stampId);
-            
+
             // 1. 이미 보유한 도장인지 확인
             UserStamp owned = userStampRepository.findByUserIdAndStampId(userId, stampId);
             if (owned != null) {
@@ -99,7 +99,7 @@ public class PointshopService {
             }
 
             // 4. user_stamp에 추가
-            UserStamp userStamp = new UserStamp();
+            UserStamp userStamp = new stamp();
             userStamp.setUserId(userId);
             userStamp.setStampId(stampId);
             userStamp.setIsActive("N");
@@ -115,14 +115,14 @@ public class PointshopService {
             history.setAfterPoint(currentPoint - price);
             history.setReason("도장 구매: " + stamp.getName());
             history.setCreatedAt(LocalDateTime.now().plusSeconds(1)); // 1초 추가하여 최신 기록 보장
-            
+
             UserPointHistory savedHistory = userPointHistoryRepository.save(history);
-            
+
             System.out.println("=== 구매 완료 ===");
             System.out.println("차감 후 포인트: " + (currentPoint - price));
             System.out.println("기록 저장됨: " + savedHistory.getReason());
             System.out.println("저장된 기록 ID: " + savedHistory.getUserPointHistoryId());
-            
+
             // 저장 후 포인트 재확인
             int updatedPoint = getUserPoint(userId);
             System.out.println("저장 후 조회된 포인트: " + updatedPoint);
@@ -135,7 +135,7 @@ public class PointshopService {
             stampHistory.setNewStampId(stampId);
             stampHistory.setCreatedAt(LocalDateTime.now());
             userStampHistoryRepository.save(stampHistory);
-            
+
             System.out.println("=== UserStampHistory 기록 추가 ===");
             System.out.println("새로운 스탬프 ID: " + stampId);
             System.out.println("스탬프 이름: " + stamp.getName());
@@ -157,19 +157,19 @@ public class PointshopService {
             System.out.println("=== 스탬프 적용 시작 ===");
             System.out.println("사용자 ID: " + userId);
             System.out.println("적용할 UserStamp ID: " + userStampId);
-            
+
             // 1. 적용할 스탬프가 존재하는지 먼저 확인
             UserStamp toActivate = userStampRepository.findById(userStampId).orElse(null);
             if (toActivate == null) {
                 System.out.println("적용할 스탬프를 찾을 수 없음: " + userStampId);
                 return false;
             }
-            
+
             if (!toActivate.getUserId().equals(userId)) {
                 System.out.println("스탬프 소유자가 일치하지 않음");
                 return false;
             }
-            
+
             // 2. 모든 도장 isActive="N"으로
             List<UserStamp> userStamps = userStampRepository.findByUserId(userId);
             System.out.println("사용자 보유 스탬프 수: " + userStamps.size());
@@ -183,12 +183,12 @@ public class PointshopService {
             toActivate.setIsActive("Y");
             userStampRepository.save(toActivate);
             System.out.println("스탬프 활성화 완료: " + toActivate.getStampId());
-            
+
             // 4. UserStampHistory에 기록 추가 (임시로 제거)
             /*
             UserStampHistory history = new UserStampHistory();
             history.setUserId(userId);
-            
+
             // 이전 스탬프 ID 찾기 (현재 활성화된 스탬프가 있다면)
             UserStamp currentActive = userStampRepository.findByUserIdAndIsActive(userId, "Y");
             if (currentActive != null && !currentActive.getUserStampId().equals(userStampId)) {
@@ -196,14 +196,14 @@ public class PointshopService {
             } else {
                 history.setPrevStampId(null); // 첫 번째 스탬프인 경우
             }
-            
+
             history.setNewStampId(toActivate.getStampId());
             history.setCreatedAt(LocalDateTime.now());
             userStampHistoryRepository.save(history);
             System.out.println("UserStampHistory 기록 추가 완료");
             */
             System.out.println("UserStampHistory 기록 추가 건너뜀 (임시)");
-            
+
             System.out.println("=== 스탬프 적용 완료 ===");
             return true;
         } catch (Exception e) {
@@ -219,7 +219,7 @@ public class PointshopService {
         // 기존 코드 (주석처리)
         // TODO: 현재 적용중인 도장 반환
         // return null;
-        
+
         // 새로운 구현: 스탬프 상세 정보 포함
         List<UserStamp> userStamps = userStampRepository.findByUserId(userId);
         for (UserStamp us : userStamps) {
@@ -234,18 +234,18 @@ public class PointshopService {
                     dto.setIsActive(us.getIsActive());
                     dto.setCreatedAt(us.getCreatedAt());
                     dto.setUpdatedAt(us.getUpdatedAt());
-                    
+
                     // 스탬프 정보 설정
                     dto.setStampName(stamp.getName());
                     dto.setStampImage(stamp.getImage());
                     dto.setStampDescription(stamp.getDescription());
                     dto.setStampPrice(stamp.getPrice());
-                    
+
                     return dto;
                 }
             }
         }
-        
+
         // 활성 스탬프가 없을 경우 기본 스탬프 반환
         UserStampDto defaultDto = new UserStampDto();
         defaultDto.setUserStampId(null);
@@ -254,13 +254,13 @@ public class PointshopService {
         defaultDto.setIsActive("N");
         defaultDto.setCreatedAt(LocalDateTime.now());
         defaultDto.setUpdatedAt(LocalDateTime.now());
-        
+
         // 기본 스탬프 정보 설정
         defaultDto.setStampName("기본 스탬프");
         defaultDto.setStampImage("default_stamp.png");
         defaultDto.setStampDescription("기본 스탬프입니다.");
         defaultDto.setStampPrice(0);
-        
+
         return defaultDto;
     }
 
@@ -278,7 +278,7 @@ public class PointshopService {
             // dto.setCreatedAt(us.getCreatedAt());
             // dto.setUpdatedAt(us.getUpdatedAt());
             // result.add(dto);
-            
+
             // 새로운 구현: 스탬프 상세 정보 포함
             Stamp stamp = stampRepository.findById(us.getStampId()).orElse(null);
             if (stamp != null) {
@@ -289,16 +289,16 @@ public class PointshopService {
                 dto.setIsActive(us.getIsActive());
                 dto.setCreatedAt(us.getCreatedAt());
                 dto.setUpdatedAt(us.getUpdatedAt());
-                
+
                 // 스탬프 정보 설정
                 dto.setStampName(stamp.getName());
                 dto.setStampImage(stamp.getImage());
                 dto.setStampDescription(stamp.getDescription());
                 dto.setStampPrice(stamp.getPrice());
-                
+
                 result.add(dto);
             }
         }
         return result;
     }
-} 
+}

@@ -2,7 +2,6 @@ package com.starter.controller;
 
 import com.starter.dto.StampDto;
 import com.starter.dto.UserStampDto;
-import com.starter.service.PointshopService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
@@ -21,7 +20,7 @@ import jakarta.servlet.http.HttpSession;
 public class PointshopController {
 
     private final PointshopService pointshopService;
-    
+
 
     // 1. 포인트샵 메인 페이지 렌더링
     @GetMapping
@@ -33,8 +32,8 @@ public class PointshopController {
         if (user == null) {
             return "redirect:/?loginRequired=true";
         }
-        
-        int userPoint = pointshopService.getUserPoint(user.getUserId());
+
+        int userPoint = pointshopService.getUserPoint(user.getId());
         model.addAttribute("title", "포인트샵");
         model.addAttribute("contentPath", "pointshop");
         model.addAttribute("userPoint", userPoint);
@@ -49,7 +48,7 @@ public class PointshopController {
         // if (user == null) {
         //     return 0; // 로그인하지 않은 경우 0 반환
         // }
-        return pointshopService.getUserPoint(user.getUserId());
+        return pointshopService.getUserPoint(user.getId());
     }
 
     // 3. 상점 도장 목록 조회 (AJAX)
@@ -63,8 +62,8 @@ public class PointshopController {
         // if (user == null) {
         //     return new ArrayList<>(); // 로그인하지 않은 경우 빈 리스트 반환
         // }
-        
-        Long userId = user.getUserId();
+
+        Long userId = user.getId();
         int userPoint = pointshopService.getUserPoint(userId);
         List<StampDto> stamps = pointshopService.getAvailableStamps(userId);
         List<UserStampDto> myStamps = pointshopService.getMyStamps(userId);
@@ -110,7 +109,7 @@ public class PointshopController {
         // if (user == null) {
         //     return new ArrayList<>(); // 로그인하지 않은 경우 빈 리스트 반환
         // }
-        return pointshopService.getMyStamps(user.getUserId());
+        return pointshopService.getMyStamps(user.getId());
     }
 
     // 5. 도장 구매
@@ -121,7 +120,7 @@ public class PointshopController {
         // if (user == null) {
         //     return false; // 로그인하지 않은 경우 false 반환
         // }
-        return pointshopService.purchaseStamp(user.getUserId(), stampId);
+        return pointshopService.purchaseStamp(user.getId(), stampId);
     }
 
     // 6. 도장 적용
@@ -132,6 +131,6 @@ public class PointshopController {
         // if (user == null) {
         //     return false; // 로그인하지 않은 경우 false 반환
         // }
-        return pointshopService.applyStamp(user.getUserId(), userStampId);
+        return pointshopService.applyStamp(user.getId(), userStampId);
     }
-} 
+}

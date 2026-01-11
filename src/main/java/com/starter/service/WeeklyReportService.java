@@ -76,11 +76,11 @@ public class WeeklyReportService {
 
             if (optionalFeedback.isPresent()) {
                 WeeklyFeedback feedback = optionalFeedback.get();
-                
+
                 // MultipleBagFetchException 해결을 위해 별도 쿼리로 컬렉션 로드
                 Optional<WeeklyFeedback> feedbackWithProofs = feedbackRepository.findWithFeedbackProofs(userId, weekOffset);
                 Optional<WeeklyFeedback> feedbackWithActivities = feedbackRepository.findWithRecommendActivities(userId, weekOffset);
-                
+
                 // 컬렉션 데이터를 기본 feedback 객체에 설정 (중복 제거)
                 if (feedbackWithProofs.isPresent()) {
                     // 기존 데이터와 새 데이터를 합치고 중복 제거
@@ -96,10 +96,10 @@ public class WeeklyReportService {
                     feedback.getRecommendActivities().clear();
                     feedback.getRecommendActivities().addAll(uniqueActivities);
                 }
-                
+
                 System.out.println("🔍 FeedbackProof 개수: " + feedback.getFeedbackProofs().size());
                 System.out.println("🔍 RecommendActivity 개수: " + feedback.getRecommendActivities().size());
-                
+
                 // 피드백이 있을 때는 피드백의 실제 날짜를 사용하여 주차 문자열 생성
                 LocalDate feedbackMonday = LocalDate.parse(feedback.getFeedbackStart());
                 builder.week(formatWeekString(feedbackMonday))
@@ -132,16 +132,16 @@ public class WeeklyReportService {
     // 주차 문자열 생성 유틸
     private String formatWeekString(LocalDate monday) {
         LocalDate sunday = monday.plusDays(6);
-        
+
         // 목요일 기준으로 주차가 속한 월 결정 (ISO 8601)
         LocalDate thursday = monday.plusDays(3);
-        
+
         // 한국 기준 주차 계산 (월요일 시작)
         WeekFields weekFields = WeekFields.of(DayOfWeek.MONDAY, 4);
         int weekOfMonth = thursday.get(weekFields.weekOfMonth());
         int year = thursday.getYear();
         int month = thursday.getMonthValue();
-        
+
         return String.format("%d년 %d월 %d주차 (%d월 %d일 ~ %d월 %d일)",
                 year,
                 month,
@@ -155,19 +155,19 @@ public class WeeklyReportService {
     // 일기 데이터에서 감정 차트 데이터 생성
     private List<EmotionChartDto> getEmotionChartsFromDiaries(List<Diary> diaries) {
         System.out.println("🎨 감정 차트 데이터 생성 시작 - 일기 개수: " + diaries.size());
-        
+
         // 1. 감정별 요일 카운트 계산
         Map<String, int[]> emotionCounts = new HashMap<>();
-        
+
         for (Diary diary : diaries) {
             if (diary.getEmotion() != null && !diary.getEmotion().trim().isEmpty()) {
                 String emotion = diary.getEmotion();
                 LocalDate diaryDate = diary.getCreatedAt().toLocalDate();
                 int dayIndex = diaryDate.getDayOfWeek().getValue() - 1; // 월요일=0, 일요일=6
-                
+
                 emotionCounts.putIfAbsent(emotion, new int[7]);
                 emotionCounts.get(emotion)[dayIndex]++;
-                
+
                 System.out.println("  📊 감정: " + emotion + ", 요일: " + diaryDate.getDayOfWeek() + ", 인덱스: " + dayIndex);
             }
         }

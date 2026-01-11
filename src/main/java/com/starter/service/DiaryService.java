@@ -88,10 +88,10 @@ public class DiaryService {
         System.out.println("userId: " + userId);
         System.out.println("content: " + content);
         System.out.println("diaryDate: " + diaryDate);
-        
+
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         System.out.println("User found: " + user.getUserNickname());
-        
+
         // 현재 적용중인 스탬프 정보 가져오기
         System.out.println("Getting current active user stamp...");
         UserStamp activeUserStamp = getCurrentActiveUserStamp(userId);
@@ -99,7 +99,7 @@ public class DiaryService {
         if (activeUserStamp != null) {
             System.out.println("Active stamp ID: " + activeUserStamp.getUserStampId());
         }
-        
+
         System.out.println("Creating DailyComment...");
         DailyComment comment = new DailyComment();
         comment.setUser(user);
@@ -107,48 +107,48 @@ public class DiaryService {
         comment.setDiaryDate(diaryDate);
         comment.setCreatedAt(LocalDateTime.now());
         comment.setUserStamp(activeUserStamp); // 현재 적용중인 스탬프 설정
-        
+
         System.out.println("Saving DailyComment to database...");
         DailyComment savedComment = dailyCommentRepository.save(comment);
         System.out.println("DailyComment saved with ID: " + savedComment.getId());
         System.out.println("UserStamp ID: " + (savedComment.getUserStamp() != null ? savedComment.getUserStamp().getUserStampId() : "null"));
-        
+
         // 감정 분석은 프론트엔드에서 전달받은 감정 키워드를 사용하므로 여기서는 수행하지 않음
         // 감정 키워드는 DiaryController에서 별도로 처리됨
-        
+
         return savedComment;
     }
     // ===================== END UPDATED DAILY COMMENT METHOD =====================
 
     // ===================== EMOTION ANALYSIS METHODS =====================
     // 2025-01-XX: 감정 분석 및 매핑 저장 기능 추가
-    
+
     // AI 서비스를 통해 감정 분석 수행
     private List<String> analyzeEmotionsFromContent(String content) {
         try {
             System.out.println("Calling AI service for emotion analysis...");
-            
+
             // AI 서비스에 요청할 데이터 준비
             Map<String, Object> requestData = new HashMap<>();
             requestData.put("raw_diary", content);
-            
+
             // HTTP 헤더 설정
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            
+
             // HTTP 엔티티 생성
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestData, headers);
-            
+
             // AI 서비스 호출
             ResponseEntity<Map> aiResponse = restTemplate.postForEntity(AI_SERVICE_URL, requestEntity, Map.class);
-            
+
             if (aiResponse.getStatusCode().is2xxSuccessful() && aiResponse.getBody() != null) {
                 Map<String, Object> aiResult = aiResponse.getBody();
-                
+
                 // emotion_keywords에서 감정 추출
                 @SuppressWarnings("unchecked")
                 List<String> emotionKeywords = (List<String>) aiResult.get("emotion_keywords");
-                
+
                 if (emotionKeywords != null && !emotionKeywords.isEmpty()) {
                     System.out.println("AI returned emotions: " + emotionKeywords);
                     return emotionKeywords;
@@ -160,53 +160,53 @@ public class DiaryService {
                 System.err.println("AI service returned error: " + aiResponse.getStatusCode());
                 return new ArrayList<>();
             }
-            
+
         } catch (Exception e) {
             System.err.println("Error calling AI service: " + e.getMessage());
             e.printStackTrace();
             return new ArrayList<>();
         }
     }
-    
+
     // 감정들을 CommentEmotionMapping에 저장
     public void saveEmotionMappings(DailyComment dailyComment, List<String> emotions) {
         System.out.println("Saving emotion mappings for comment ID: " + dailyComment.getId());
         System.out.println("Emotions to save: " + emotions);
-        
+
         for (String emotionName : emotions) {
             try {
                 // EmotionData 조회 또는 생성
                 EmotionData emotionData = getOrCreateEmotionData(emotionName);
-                
+
                 // CommentEmotionMapping 생성
                 CommentEmotionMapping mapping = new CommentEmotionMapping();
-                
+
                 // 복합키 설정
                 CommentEmotionId id = new CommentEmotionId();
                 id.setDailyCommentId(dailyComment.getId());
                 id.setEmotionId(emotionData.getId());
                 mapping.setId(id);
-                
+
                 // 연관관계 설정
                 mapping.setDailyComment(dailyComment);
                 mapping.setEmotionData(emotionData);
-                
+
                 // 저장
                 commentEmotionMappingRepository.save(mapping);
                 System.out.println("Saved emotion mapping: " + emotionName + " for comment ID: " + dailyComment.getId());
-                
+
             } catch (Exception e) {
                 System.err.println("Error saving emotion mapping for " + emotionName + ": " + e.getMessage());
                 e.printStackTrace();
             }
         }
     }
-    
+
     // EmotionData 조회 또는 생성
     private EmotionData getOrCreateEmotionData(String emotionName) {
         // 기존 EmotionData 조회
         Optional<EmotionData> existingEmotion = emotionDataRepository.findByName(emotionName);
-        
+
         if (existingEmotion.isPresent()) {
             System.out.println("Found existing emotion: " + emotionName);
             return existingEmotion.get();
@@ -223,22 +223,22 @@ public class DiaryService {
 
     // ===================== EMOTION MAPPING QUERY METHODS =====================
     // 2025-01-XX: 감정 매핑 조회 기능 추가
-    
+
     // 특정 DailyComment의 감정 매핑 조회
     @Transactional(readOnly = true)
     public List<CommentEmotionMapping> getCommentEmotionMappings(Long dailyCommentId) {
         DailyComment dailyComment = dailyCommentRepository.findById(dailyCommentId)
             .orElseThrow(() -> new IllegalArgumentException("DailyComment not found"));
-        
+
         return commentEmotionMappingRepository.findByDailyComment(dailyComment);
     }
-    
+
     // 특정 사용자의 모든 감정 매핑 조회
     @Transactional(readOnly = true)
     public List<CommentEmotionMapping> getUserEmotionMappings(Long userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        
+
         List<DailyComment> userComments = dailyCommentRepository.findByUser(user);
         return commentEmotionMappingRepository.findByDailyCommentIn(userComments);
     }
@@ -249,13 +249,13 @@ public class DiaryService {
     // 일기와 코멘트(UserStamp 포함) 정보를 함께 조회
     @Transactional(readOnly = true)
     public Map<String, Object> getCalendarData(Long userId, int year, int month) {
-        
+
         // 월별 일기 조회
         List<Diary> diaries = getDiariesByUserAndMonth(userId, year, month);
-        
+
         // 월별 코멘트 조회 (UserStamp 정보 포함)
         List<DailyComment> comments = dailyCommentRepository.findByUserAndYearMonthWithStamp(userId, year, month);
-        
+
         // 코멘트 데이터를 Map으로 변환하여 Stamp 정보 포함
         List<Map<String, Object>> commentsWithStamp = new ArrayList<>();
         for (DailyComment comment : comments) {
@@ -264,7 +264,7 @@ public class DiaryService {
             commentData.put("content", comment.getContent());
             commentData.put("diaryDate", comment.getDiaryDate());
             commentData.put("createdAt", comment.getCreatedAt());
-            
+
             // UserStamp 정보 처리
             if (comment.getUserStamp() != null) {
                 // Stamp 정보 조회
@@ -291,17 +291,17 @@ public class DiaryService {
                 userStampData.put("stampImage", "image/default_stamp.png");
                 commentData.put("userStamp", userStampData);
             }
-            
+
             commentsWithStamp.add(commentData);
         }
-        
+
         // 결과 맵 생성
         Map<String, Object> result = new HashMap<>();
         result.put("diaries", diaries);
         result.put("comments", commentsWithStamp);
         result.put("year", year);
         result.put("month", month);
-        
+
         return result;
     }
     // ===================== END UPDATED CALENDAR DATA METHOD =====================
@@ -327,11 +327,11 @@ public class DiaryService {
     @Transactional(readOnly = true)
     public List<Map<String, Object>> getAllCommentsForDebug(Long userId) {
         List<DailyComment> comments = dailyCommentRepository.findByUser_UserIdAndDiaryDateBetween(
-            userId, 
-            LocalDateTime.of(2020, 1, 1, 0, 0), 
+            userId,
+            LocalDateTime.of(2020, 1, 1, 0, 0),
             LocalDateTime.of(2030, 12, 31, 23, 59)
         );
-        
+
         List<Map<String, Object>> result = new ArrayList<>();
         for (DailyComment comment : comments) {
             Map<String, Object> commentData = new HashMap<>();
@@ -342,7 +342,7 @@ public class DiaryService {
             commentData.put("userStamp", comment.getUserStamp());
             result.add(commentData);
         }
-        
+
         return result;
     }
     // ===================== END DEBUG METHOD =====================
@@ -370,9 +370,9 @@ public class DiaryService {
         LocalDate end = YearMonth.of(year, month).atEndOfMonth();
         LocalDateTime startDateTime = start.atStartOfDay();
         LocalDateTime endDateTime = end.atTime(23,59,59);
-        
+
         List<Diary> diaries = diaryRepository.findByUserAndCreatedAtBetween(user, startDateTime, endDateTime);
-        
+
         // 감정별 카운트 계산
         Map<String, Long> emotionCounts = diaries.stream()
                 .filter(diary -> diary.getEmotion() != null && !diary.getEmotion().trim().isEmpty())
@@ -380,7 +380,7 @@ public class DiaryService {
                     Diary::getEmotion,
                     Collectors.counting()
                 ));
-        
+
         // 상위 3개 감정 추출
         List<Map<String, Object>> topEmotions = emotionCounts.entrySet().stream()
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
@@ -392,7 +392,7 @@ public class DiaryService {
                     return emotionData;
                 })
                 .collect(Collectors.toList());
-        
+
         // 결과 맵 생성
         Map<String, Object> result = new HashMap<>();
         result.put("topEmotions", topEmotions);
@@ -400,7 +400,7 @@ public class DiaryService {
         result.put("totalDiaries", diaries.size());
         result.put("year", year);
         result.put("month", month);
-        
+
         return result;
     }
     // ===================== END NEW EMOTION STATS METHOD =====================
@@ -411,12 +411,12 @@ public class DiaryService {
     @Transactional(readOnly = true)
     public List<Diary> getTodayDiaries(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        
+
         // 오늘 날짜의 시작과 끝 시간 설정
         LocalDate today = LocalDate.now();
         LocalDateTime startOfDay = today.atStartOfDay();
         LocalDateTime endOfDay = today.atTime(23, 59, 59);
-        
+
         return diaryRepository.findByUserAndCreatedAtBetween(user, startOfDay, endOfDay);
     }
     // ===================== END NEW METHOD =====================
@@ -432,16 +432,16 @@ public class DiaryService {
     // 과거 날짜의 AI 코멘트를 조회하기 위한 메서드
     @Transactional(readOnly = true)
     public Optional<DailyComment> getDailyCommentByDate(Long userId, int year, int month, int day) {
-        
+
         // 해당 날짜의 시작과 끝 시간 설정
         LocalDateTime startOfDay = LocalDateTime.of(year, month, day, 0, 0, 0);
         LocalDateTime endOfDay = LocalDateTime.of(year, month, day, 23, 59, 59);
-        
+
         // 해당 날짜의 DailyComment 조회
         List<DailyComment> comments = dailyCommentRepository.findByUser_UserIdAndDiaryDateBetween(
             userId, startOfDay, endOfDay
         );
-        
+
         // 가장 최근 코멘트 반환 (여러 개가 있을 경우)
         return comments.stream()
                 .max(Comparator.comparing(DailyComment::getCreatedAt));
@@ -456,30 +456,30 @@ public class DiaryService {
         System.out.println("=== DiaryService.saveAIAnalysisResult called ===");
         System.out.println("userId: " + userId);
         System.out.println("aiResult keys: " + aiResult.keySet());
-        
+
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        
+
         // WeeklyFeedback 생성
         WeeklyFeedback feedback = new WeeklyFeedback();
         feedback.setUser(user);
         feedback.setCreatedAt(LocalDateTime.now());
-        
+
         // AI 분석 결과에서 데이터 추출
         String comment = (String) aiResult.get("comment");
         String quote = (String) aiResult.get("quote");
         List<String> emotionKeywords = (List<String>) aiResult.get("emotion_keywords");
         List<Map<String, Object>> similarPastDiaries = (List<Map<String, Object>>) aiResult.get("similar_past_diaries");
         List<Map<String, Object>> recommendActivities = (List<Map<String, Object>>) aiResult.get("recommend_activities");
-        
+
         // WeeklyFeedback 설정
         feedback.setEmotionSummary(String.join(", ", emotionKeywords != null ? emotionKeywords : new ArrayList<>()));
         feedback.setIsQualified("Y"); // 기본값으로 자격 부여
         feedback.setWeekOffset(0); // 현재 주차
-        
+
         // WeeklyFeedback 저장
         WeeklyFeedback savedFeedback = weeklyFeedbackRepository.save(feedback);
         System.out.println("WeeklyFeedback saved with ID: " + savedFeedback.getId());
-        
+
         // FeedbackProof 저장 (유사한 과거 일기들)
         List<Map<String, Object>> savedProofs = new ArrayList<>();
         if (similarPastDiaries != null) {
@@ -489,7 +489,7 @@ public class DiaryService {
                 proof.setType("similar_diary");
                 proof.setDetail(similarDiary.toString());
                 proof.setCreatedAt(LocalDateTime.now());
-                
+
                 FeedbackProof savedProof = feedbackProofRepository.save(proof);
                 Map<String, Object> proofData = new HashMap<>();
                 proofData.put("proof_id", savedProof.getId());
@@ -498,7 +498,7 @@ public class DiaryService {
                 savedProofs.add(proofData);
             }
         }
-        
+
         // RecommendActivity 저장
         List<Map<String, Object>> savedActivities = new ArrayList<>();
         if (recommendActivities != null) {
@@ -511,7 +511,7 @@ public class DiaryService {
                 recommendActivity.setDetail((String) activity.get("detail"));
                 recommendActivity.setOrder((long) (i + 1));
                 recommendActivity.setCreatedAt(LocalDateTime.now());
-                
+
                 RecommendActivity savedActivity = recommendActivityRepository.save(recommendActivity);
                 Map<String, Object> activityData = new HashMap<>();
                 activityData.put("activity_id", savedActivity.getId());
@@ -522,19 +522,19 @@ public class DiaryService {
                 savedActivities.add(activityData);
             }
         }
-        
+
         // 결과 맵 생성
         Map<String, Object> result = new HashMap<>();
         result.put("feedback_id", savedFeedback.getId());
         result.put("proofs", savedProofs);
         result.put("activities", savedActivities);
-        
+
         System.out.println("AI Analysis Result saved successfully");
         System.out.println("Feedback ID: " + savedFeedback.getId());
         System.out.println("Proofs count: " + savedProofs.size());
         System.out.println("Activities count: " + savedActivities.size());
-        
+
         return result;
     }
     // ===================== END NEW AI ANALYSIS SAVE METHOD =====================
-} 
+}

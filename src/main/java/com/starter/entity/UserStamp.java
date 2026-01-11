@@ -1,6 +1,5 @@
 package com.starter.entity;
 
-import com.starter.entity.Stamp.StampStatus;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;

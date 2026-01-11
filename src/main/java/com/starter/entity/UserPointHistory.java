@@ -47,4 +47,4 @@ public class UserPointHistory extends BaseTimeEntity{
         this.reason = reason;
     }
 
-} 
+}
