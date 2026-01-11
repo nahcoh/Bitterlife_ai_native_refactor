@@ -45,8 +45,8 @@ public class UserController {
      * @return 성공 시 메인 페이지로 리다이렉트, 실패 시 에러 페이지로 리다이렉트
      */
     @PostMapping("/login")
-    public String login(@RequestParam String email, 
-                       @RequestParam String password, 
+    public String login(@RequestParam String email,
+                       @RequestParam String password,
                        HttpSession session) {
         try {
             User user = userService.login(email, password);
@@ -73,4 +73,4 @@ public class UserController {
     }
 
 
-} 
+}

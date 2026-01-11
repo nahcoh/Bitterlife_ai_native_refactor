@@ -30,12 +30,12 @@ import org.springframework.web.client.RestTemplate;
 @Controller
 @RequiredArgsConstructor
 public class DiaryController {
-    
+
     private final DiaryService diaryService;
     private final UserRepository userRepository;
     private final PointshopService pointshopService;
     private final StampRepository stampRepository;
-    
+
     private final RestTemplate restTemplate = new RestTemplate();
     private final String AI_SERVICE_URL = (System.getenv("AI_SERVICE_URL") != null ? System.getenv("AI_SERVICE_URL") : "http://localhost:8000") + "/api/v1/diary-analyzer/analyze";
 
@@ -54,24 +54,24 @@ public class DiaryController {
         System.out.println("userId: " + userId);
         System.out.println("content: " + content);
         System.out.println("emotion: " + emotion);
-        
+
         try {
             Diary saved = diaryService.saveDiary(userId, content, emotion);
             System.out.println("Diary saved successfully with ID: " + saved.getDiaryId());
-            
+
             // 간단한 응답 형태로 변경 (디버깅용)
             ApiResponse<Diary> response = new ApiResponse<>(true, "일기 저장 성공", saved);
             System.out.println("API Response: " + response.isSuccess() + ", " + response.getMessage());
-            
+
             // 응답을 Map으로 변환하여 디버깅
             java.util.Map<String, Object> debugResponse = new java.util.HashMap<>();
             debugResponse.put("success", true);
             debugResponse.put("message", "일기 저장 성공");
             debugResponse.put("data", saved);
             debugResponse.put("diaryId", saved.getDiaryId());
-            
+
             System.out.println("Debug Response: " + debugResponse);
-            
+
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             System.err.println("Error saving diary: " + e.getMessage());
@@ -119,12 +119,12 @@ public class DiaryController {
         System.out.println("content: " + content);
         System.out.println("diaryDate: " + diaryDate);
         System.out.println("emotionKeywords: " + emotionKeywords);
-        
+
         try {
             // diaryDate 문자열을 LocalDateTime으로 변환
             java.time.LocalDateTime parsedDate = java.time.LocalDateTime.parse(diaryDate);
             System.out.println("Parsed date: " + parsedDate);
-            
+
             // 감정 키워드 파싱
             List<String> emotions = new ArrayList<>();
             if (emotionKeywords != null && !emotionKeywords.trim().isEmpty()) {
@@ -139,25 +139,25 @@ public class DiaryController {
                     emotions = new ArrayList<>();
                 }
             }
-            
+
             // 코멘트 저장 (스탬프 정보 포함)
             System.out.println("Calling diaryService.saveDailyComment...");
             com.starter.entity.DailyComment savedComment = diaryService.saveDailyComment(userId, content, parsedDate);
             System.out.println("Comment saved successfully with ID: " + savedComment.getId());
-            
+
             // 감정 키워드가 있으면 CommentEmotionMapping에 저장
             if (!emotions.isEmpty()) {
                 System.out.println("Saving emotion mappings for comment ID: " + savedComment.getId());
                 diaryService.saveEmotionMappings(savedComment, emotions);
                 System.out.println("Emotion mappings saved successfully");
             }
-            
+
             Map<String, Object> result = new HashMap<>();
             result.put("commentId", savedComment.getId());
             result.put("content", savedComment.getContent());
             result.put("diaryDate", savedComment.getDiaryDate());
             result.put("createdAt", savedComment.getCreatedAt());
-            
+
             // 스탬프 정보 포함
             if (savedComment.getUserStamp() != null) {
                 // UserStamp의 stampId를 통해 Stamp 정보 조회
@@ -172,11 +172,11 @@ public class DiaryController {
             } else {
                 System.out.println("No UserStamp found for saved comment");
             }
-            
+
             // 저장된 감정 키워드 포함
             result.put("analyzedEmotions", emotions);
             System.out.println("Analyzed emotions: " + emotions);
-            
+
             System.out.println("Returning success response with data: " + result);
             return ResponseEntity.ok(new ApiResponse<>(true, "코멘트 저장 성공", result));
         } catch (Exception e) {
@@ -222,7 +222,7 @@ public class DiaryController {
 
     // ===================== EMOTION MAPPING API =====================
     // 2025-01-XX: 감정 매핑 조회 기능 추가
-    
+
     // 특정 코멘트의 감정 분석 결과 조회
     @GetMapping("/api/daily-comments/{commentId}/emotions")
     @ResponseBody
@@ -230,11 +230,11 @@ public class DiaryController {
         try {
             List<com.starter.entity.CommentEmotionMapping> emotionMappings =
                 diaryService.getCommentEmotionMappings(commentId);
-            
+
             List<String> emotions = emotionMappings.stream()
                 .map(mapping -> mapping.getEmotionData().getName())
                 .collect(java.util.stream.Collectors.toList());
-            
+
             return ResponseEntity.ok(new ApiResponse<>(true, "감정 분석 결과 조회 성공", emotions));
         } catch (Exception e) {
             System.err.println("Error getting comment emotions: " + e.getMessage());
@@ -242,7 +242,7 @@ public class DiaryController {
             return ResponseEntity.ok(new ApiResponse<>(false, "감정 분석 결과 조회 실패: " + e.getMessage(), null));
         }
     }
-    
+
     // 특정 사용자의 모든 감정 분석 결과 조회
     @GetMapping("/api/users/{userId}/emotions")
     @ResponseBody
@@ -250,25 +250,25 @@ public class DiaryController {
         try {
             List<com.starter.entity.CommentEmotionMapping> emotionMappings =
                 diaryService.getUserEmotionMappings(userId);
-            
+
             // 감정별 빈도 계산
             Map<String, Long> emotionFrequency = emotionMappings.stream()
                 .collect(java.util.stream.Collectors.groupingBy(
                     mapping -> mapping.getEmotionData().getName(),
                     java.util.stream.Collectors.counting()
                 ));
-            
+
             // 전체 감정 목록
             List<String> allEmotions = emotionMappings.stream()
                 .map(mapping -> mapping.getEmotionData().getName())
                 .distinct()
                 .collect(java.util.stream.Collectors.toList());
-            
+
             Map<String, Object> result = new HashMap<>();
             result.put("emotionFrequency", emotionFrequency);
             result.put("allEmotions", allEmotions);
             result.put("totalEmotionCount", emotionMappings.size());
-            
+
             return ResponseEntity.ok(new ApiResponse<>(true, "사용자 감정 분석 결과 조회 성공", result));
         } catch (Exception e) {
             System.err.println("Error getting user emotions: " + e.getMessage());
@@ -287,9 +287,9 @@ public class DiaryController {
     @ResponseBody
     public ResponseEntity<ApiResponse<Map<String, Object>>> getActiveStamp(@RequestParam Long userId) {
         try {
-            com.starter.dto.UserStampDto activeStamp = 
+            com.starter.dto.UserStampDto activeStamp =
                 pointshopService.getActiveStamp(userId);
-            
+
             Map<String, Object> result = new HashMap<>();
             if (activeStamp != null) {
                 result.put("stampName", activeStamp.getStampName());
@@ -302,7 +302,7 @@ public class DiaryController {
                 result.put("stampDescription", "기본 격려 스탬프");
                 result.put("isActive", "Y");
             }
-            
+
             return ResponseEntity.ok(new ApiResponse<>(true, "적용된 스탬프 조회 성공", result));
         } catch (Exception e) {
             return ResponseEntity.ok(new ApiResponse<>(false, "스탬프 조회 실패: " + e.getMessage(), null));
@@ -319,26 +319,26 @@ public class DiaryController {
         System.out.println("=== AI Diary Analysis API Called ===");
         System.out.println("userId: " + userId);
         System.out.println("content: " + content);
-        
+
         try {
             // AI 서비스에 요청할 데이터 준비
             Map<String, Object> requestData = new HashMap<>();
             requestData.put("user_id", String.valueOf(userId));
             requestData.put("raw_diary", content);
-            
+
             // HTTP 헤더 설정
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            
+
             // HTTP 엔티티 생성
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestData, headers);
-            
+
             // AI 서비스 호출
             ResponseEntity<Map> aiResponse = restTemplate.postForEntity(AI_SERVICE_URL, requestEntity, Map.class);
-            
+
             if (aiResponse.getStatusCode().is2xxSuccessful() && aiResponse.getBody() != null) {
                 Map<String, Object> aiResult = aiResponse.getBody();
-                
+
                 // 응답 데이터 구성
                 Map<String, Object> responseData = new HashMap<>();
                 responseData.put("processed_diary", aiResult.get("processed_diary"));
@@ -348,14 +348,14 @@ public class DiaryController {
                 responseData.put("quote", aiResult.get("quote"));
                 responseData.put("emotion_keywords", aiResult.get("emotion_keywords"));
                 responseData.put("similar_past_diaries", aiResult.get("similar_past_diaries"));
-                
+
                 System.out.println("AI Analysis completed successfully");
                 return ResponseEntity.ok(new ApiResponse<>(true, "AI 일기 분석 완료", responseData));
             } else {
                 System.err.println("AI service returned error: " + aiResponse.getStatusCode());
                 return ResponseEntity.ok(new ApiResponse<>(false, "AI 서비스 오류", null));
             }
-            
+
         } catch (Exception e) {
             System.err.println("Error in AI diary analysis: " + e.getMessage());
             e.printStackTrace();
@@ -373,36 +373,36 @@ public class DiaryController {
         System.out.println("=== AI Diary Analysis and Save API Called ===");
         System.out.println("userId: " + userId);
         System.out.println("content: " + content);
-        
+
         try {
             // AI 서비스에 요청할 데이터 준비
             Map<String, Object> requestData = new HashMap<>();
             requestData.put("user_id", String.valueOf(userId));
             requestData.put("raw_diary", content);
-            
+
             // 디버깅: 요청 데이터 출력
             System.out.println("=== AI Service Request Data ===");
             System.out.println("URL: " + AI_SERVICE_URL);
             System.out.println("user_id: " + requestData.get("user_id"));
             System.out.println("raw_diary: " + requestData.get("raw_diary"));
             System.out.println("Request Data: " + requestData);
-            
+
             // HTTP 헤더 설정
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            
+
             // HTTP 엔티티 생성
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestData, headers);
-            
+
             // AI 서비스 호출
             ResponseEntity<Map> aiResponse = restTemplate.postForEntity(AI_SERVICE_URL, requestEntity, Map.class);
-            
+
             if (aiResponse.getStatusCode().is2xxSuccessful() && aiResponse.getBody() != null) {
                 Map<String, Object> aiResult = aiResponse.getBody();
-                
+
                 // AI 분석 결과를 DB에 저장
                 Map<String, Object> savedData = diaryService.saveAIAnalysisResult(userId, aiResult);
-                
+
                 // 응답 데이터 구성
                 Map<String, Object> responseData = new HashMap<>();
                 responseData.put("processed_diary", aiResult.get("processed_diary"));
@@ -415,14 +415,14 @@ public class DiaryController {
                 responseData.put("saved_feedback_id", savedData.get("feedback_id"));
                 responseData.put("saved_proofs", savedData.get("proofs"));
                 responseData.put("saved_activities", savedData.get("activities"));
-                
+
                 System.out.println("AI Analysis and Save completed successfully");
                 return ResponseEntity.ok(new ApiResponse<>(true, "AI 일기 분석 및 저장 완료", responseData));
             } else {
                 System.err.println("AI service returned error: " + aiResponse.getStatusCode());
                 return ResponseEntity.ok(new ApiResponse<>(false, "AI 서비스 오류", null));
             }
-            
+
         } catch (Exception e) {
             System.err.println("Error in AI diary analysis and save: " + e.getMessage());
             e.printStackTrace();
@@ -439,11 +439,11 @@ public class DiaryController {
     public ResponseEntity<ApiResponse<List<Diary>>> getTodayDiaries(@RequestParam Long userId) {
         System.out.println("=== Get Today Diaries API Called ===");
         System.out.println("userId: " + userId);
-        
+
         try {
             List<Diary> todayDiaries = diaryService.getTodayDiaries(userId);
             System.out.println("Today diaries count: " + todayDiaries.size());
-            
+
             return ResponseEntity.ok(new ApiResponse<>(true, "오늘의 기록 조회 성공", todayDiaries));
         } catch (Exception e) {
             System.err.println("Error getting today diaries: " + e.getMessage());
@@ -465,16 +465,16 @@ public class DiaryController {
         try {
             java.util.Optional<com.starter.entity.DailyComment> comment =
                 diaryService.getDailyCommentByDate(userId, year, month, day);
-            
+
             Map<String, Object> result = new HashMap<>();
-            
+
             if (comment.isPresent()) {
                 com.starter.entity.DailyComment dailyComment = comment.get();
                 result.put("success", true);
                 result.put("content", dailyComment.getContent());
                 result.put("diaryDate", dailyComment.getDiaryDate());
                 result.put("createdAt", dailyComment.getCreatedAt());
-                
+
                 // 스탬프 정보 포함
                 if (dailyComment.getUserStamp() != null) {
                     // UserStamp의 stampId를 통해 Stamp 정보 조회
@@ -488,7 +488,7 @@ public class DiaryController {
                 result.put("success", false);
                 result.put("message", "해당 날짜의 코멘트가 없습니다.");
             }
-            
+
             return ResponseEntity.ok(new ApiResponse<>(true, "특정 날짜 코멘트 조회 성공", result));
         } catch (Exception e) {
             System.err.println("Error getting daily comment by date: " + e.getMessage());
@@ -542,4 +542,4 @@ public class DiaryController {
         return "redirect:/diary-calendar";
     }
     // ===================== END UPDATED FORM ENDPOINT =====================
-} 
+}

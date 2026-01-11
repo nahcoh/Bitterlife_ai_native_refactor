@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface EmotionDataRepository extends JpaRepository<EmotionData, Long> {
     Optional<EmotionData> findByName(String name);
-} 
+}
+

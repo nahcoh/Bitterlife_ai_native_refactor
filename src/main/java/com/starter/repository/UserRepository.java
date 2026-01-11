@@ -10,21 +10,21 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     // 이메일로 사용자 찾기
-    Optional<User> findByUserEmail(String userEmail);
+    Optional<User> findByEmail(String email);
     
     // 이메일 중복 확인
-    boolean existsByUserEmail(String userEmail);
+    boolean existsByEmail(String email);
     
     // 카카오 ID로 사용자 찾기
-    Optional<User> findByUserKakaoId(String userKakaoId);
+    Optional<User> findByKakaoId(String kakaoId);
     
     // 활성 사용자만 찾기
-    @Query("SELECT u FROM User u WHERE u.userEmail = :email AND u.userStatus = 'active' AND u.userDeletedAt IS NULL")
+    @Query("SELECT u FROM User u WHERE u.email = :email AND u.status = 'ACTIVE' AND u.deletedAt IS NULL")
     Optional<User> findActiveUserByEmail(@Param("email") String email);
     
     // 닉네임으로 사용자 찾기
-    Optional<User> findByUserNickname(String userNickname);
+    Optional<User> findByNickname(String nickname);
     
     // 닉네임 중복 확인
-    boolean existsByUserNickname(String userNickname);
+    boolean existsByNickname(String nickname);
 } 

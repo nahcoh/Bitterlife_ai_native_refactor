@@ -32,7 +32,7 @@ public class MyPageService {
         List<String> mainEmotions = List.of();
         String recentCommentContent = null;
         String recentStampImage = null;
-        
+
         if (recentComment != null) {
             // 감정 매핑 조회 및 감정명 추출
             List<CommentEmotionMapping> mappings = commentEmotionMappingRepository.findByDailyCommentIn(List.of(recentComment));
@@ -41,7 +41,7 @@ public class MyPageService {
                 .toList();
             recentCommentContent = recentComment.getContent();
         }
-        
+
         // 현재 적용된 스탬프 정보 가져오기
         try {
             com.starter.dto.UserStampDto activeStamp = pointshopService.getActiveStamp(user.getUserId());
@@ -53,13 +53,13 @@ public class MyPageService {
         } catch (Exception e) {
             recentStampImage = "image/default_stamp.png";
         }
-        
+
         // mainEmotions를 '#행복 #피로' 형식의 1개 문자열 리스트로 가공
         String mainEmotionsStr = mainEmotions.stream()
             .map(e -> "#" + e)
             .reduce((a, b) -> a + " " + b)
             .orElse("");
-        
+
         MyPageSummaryDto dto = new MyPageSummaryDto();
         dto.setNickname(user.getUserNickname());
         dto.setEmail(user.getUserEmail());
